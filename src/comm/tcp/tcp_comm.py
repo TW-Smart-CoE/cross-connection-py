@@ -10,8 +10,8 @@ class TcpComm(Comm):
         self.__address: str = address
         self.__port: int = port
 
-    def recv(self, len: int) -> bytes:
-        return self.__tcp_socket.recv(len)
+    def recv(self, buf: bytearray, offset: int, len: int) -> int:
+        return self.__tcp_socket.recv_into(buf[offset:], len)
 
     def send(self, data: bytes) -> int:
         return self.__tcp_socket.send(data)

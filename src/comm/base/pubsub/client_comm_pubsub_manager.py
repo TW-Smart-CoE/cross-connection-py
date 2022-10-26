@@ -29,5 +29,5 @@ class ClientCommPubSubManager:
                         app_topic, method = \
                             TopicMapper.to_app_topic(full_topic)
                         subscription.callback(app_topic, method, data)
-                    except BaseException as e:
-                        self.__logger.error(e)
+                    except Exception as e:
+                        self.__logger.error(str(e))

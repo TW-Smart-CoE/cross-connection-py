@@ -29,7 +29,7 @@ class Logger(ABC):
         raise NotImplementedError
 
 
-def DefaultLogger(Logger):
+class DefaultLogger(Logger):
     def verbose(self, message: str):
         print('[VERBOSE] {0}'.format(message))
 

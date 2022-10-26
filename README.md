@@ -1,4 +1,4 @@
-# adap-light-controller
+# connection-py
 
 python 3.9+
 
@@ -6,26 +6,5 @@ python 3.9+
 
 ```
 pip install -Ur requirements
-```
-
-On raspberry Pi, install ws282x library
-
-```
-sudo pip install rpi-ws281x
-```
-
-```
 ./scripts/setup.sh
-```
-
-## Run
-
-```
-python src/main.py
-```
-
-On Raspberry Pi
-
-```
-sudo python src/main.py
 ```

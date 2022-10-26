@@ -1,5 +1,6 @@
 # coding: utf-8
 
+from email import header
 import struct
 from dataclasses import dataclass
 from enum import Enum
@@ -7,6 +8,7 @@ from src.utils.message_converter import MessageConvert
 
 
 MSG_HEADER_LEN = 16
+MSG_FLAG = 0xfffeb0d4
 
 
 class MsgType(Enum):
@@ -32,13 +34,9 @@ class Method(Enum):
     RESPONSE = 4
 
 
-def msg_flag() -> int:
-    return 0xfffeb0d4
-
-
 @dataclass
 class MsgHeader:
-    flag: int = msg_flag()
+    flag: int = MSG_FLAG
     type: int = MsgType.PUBLISH.value
     method: int = Method.REPORT.value
     topic_len: int = 0
@@ -60,9 +58,14 @@ class MsgHeader:
         self.check_sum = result[5]
         self.reserved = result[6]
 
-    def to_bytes(self) -> bytes:
-        data = struct.pack(
+    def to_bytes(self, dst_byte_array: bytearray = None) -> bytes:
+        if dst_byte_array is None:
+            dst_byte_array = bytearray(MSG_HEADER_LEN)
+
+        struct.pack_into(
             '>IBBHHHI',
+            dst_byte_array,
+            0,
             self.flag,
             self.type,
             self.method,
@@ -72,7 +75,7 @@ class MsgHeader:
             self.reserved,
         )
 
-        return data
+        return bytes(dst_byte_array)
 
     def copy(self):
         msg_header = MsgHeader()
@@ -96,11 +99,42 @@ class Msg:
         self.topic = topic
         self.data = data
 
-    def length(self):
-        return MSG_HEADER_LEN + self.header.topic_len + self.header.data_len
+    def __topic_len(self) -> int:
+        return 0 if self.topic is None else len(self.topic)
 
-    def to_bytes(self):
-        header_buffer = self.header.to_bytes()
+    def __data_len(self) -> int:
+        return 0 if self.data is None else len(self.data)
+
+    def length(self) -> int:
+        return MSG_HEADER_LEN + self.__topic_len() + self.__data_len()
+
+    def prepare(self):
+        if self.topic is None:
+            raise Exception('topic is None')
+
+        if self.data is None:
+            raise Exception('data is None')
+
+        self.header.topic_len = len(self.topic)
+        self.header.data_len = len(self.data)
+        self.header.check_sum = calc_checksum(self)
+
+    def to_bytes(self) -> bytes:
+        byte_arr = bytearray(self.length())
+        self.header.to_bytes(byte_arr)
+
+        byte_arr[MSG_HEADER_LEN:MSG_HEADER_LEN + len(self.topic)] = self.topic
+        byte_arr[MSG_HEADER_LEN + len(self.topic):
+                 MSG_HEADER_LEN + len(self.topic) + len(self.data)] = self.data
+
+        return bytes(byte_arr)
+
+    def copy(self):
+        return Msg(
+            header=self.header.copy(),
+            topic=self.topic,
+            data=self.data
+        )
 
 
 def create_msg(
