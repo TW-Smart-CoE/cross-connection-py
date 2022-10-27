@@ -11,7 +11,9 @@ class TcpComm(Comm):
         self.__port: int = port
 
     def recv(self, buf: bytearray, offset: int, length: int) -> int:
-        return self.__tcp_socket.recv_into(buf[offset:], length)
+        data = self.__tcp_socket.recv(length)
+        buf[offset:] = data
+        return len(data)
 
     def send(self, data: bytes) -> int:
         return self.__tcp_socket.send(data)

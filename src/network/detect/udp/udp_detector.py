@@ -34,7 +34,7 @@ class UdpDetector(NetworkDetector):
     def start_discover(
         self,
         config_props: Dict[str, str],
-        on_found_service: Callable[[Dict[str, str]], None]
+        on_found_service: Callable[[Dict[str, str]], None],
     ):
         self.__broadcast_port = PropsUtils.get_prop_int(
             config_props,
@@ -44,11 +44,13 @@ class UdpDetector(NetworkDetector):
 
         self.__flag = PropsUtils.get_prop_int(
             config_props,
+            PropKeys.PROP_UDP_DETECTOR_FLAG,
             DEFAULT_BROADCAST_FLAG,
         )
 
         self.__receiver_sock = socket(AF_INET, SOCK_DGRAM)
-        self.__receiver_sock.bind('', self.__broadcast_port)
+        self.__receiver_sock.bind(('', self.__broadcast_port))
+        self.__is_keep_receiving = True
 
         while self.__is_keep_receiving and self.__receiver_sock is not None:
             self.__logger.debug(
@@ -58,7 +60,7 @@ class UdpDetector(NetworkDetector):
             data = self.__receiver_sock.recvfrom(UdpDetector.RECV_BUF_LEN)
             if len(data[0]) == BROADCAST_MSG_HEADER_LEN:
                 broadcastMsg = BroadcastMsg()
-                broadcastMsg.from_bytes(data)
+                broadcastMsg.from_bytes(data[0])
                 if broadcastMsg.flag == self.__flag:
                     props = dict()
                     props[PropKeys.PROP_UDP_DETECTOR_ON_FOUND_SERVICE_IP] \

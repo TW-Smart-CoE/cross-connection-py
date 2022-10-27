@@ -58,7 +58,7 @@ class TcpClient(Connection):
             self,
             listener: Callable[[ConnectionState, Exception], None]):
         if listener not in self.__on_connection_state_changed_listener_list:
-            self.__on_command_listener_list.append(listener)
+            self.__on_connection_state_changed_listener_list.append(listener)
 
     def remove_on_connection_state_changed_listener(
             self,
@@ -83,7 +83,7 @@ class TcpClient(Connection):
         )
         self.__min_reconnect_retry_time = PropsUtils.get_prop_int(
             config_props,
-            PropKeys.PROP_AUTO_CONNECT,
+            PropKeys.PROP_MIN_RECONNECT_RETRY_TIME,
             TcpClient.PROPERTY_MIN_RECONNECT_RETRY_TIME_DEFAULT
         )
         self.__max_reconnect_retry_time = PropsUtils.get_prop_int(
@@ -96,7 +96,7 @@ class TcpClient(Connection):
             self.__min_reconnect_retry_time
         )
 
-        self.__tcp_connect(self)
+        self.__tcp_connect()
         self.__is_init = True
 
     def __close_task(self):

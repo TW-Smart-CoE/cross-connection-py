@@ -24,8 +24,8 @@ class TestCommHandler(TestCase):
                 if self.__read_count == 0:
                     self.__read_count += 1
 
-                    self.msg.header.type = MsgType.UNSUBSCRIBE.value
-                    self.msg.header.method = Method.QUERY.value
+                    self.msg.header.type = MsgType.UNSUBSCRIBE
+                    self.msg.header.method = Method.QUERY
                     self.msg.header.check_sum = 0
                     self.msg.topic = MessageConverter.str_to_bytes('/aaaa')
                     self.msg.data = MessageConverter.str_to_bytes('00000000')
@@ -69,8 +69,8 @@ class TestCommHandler(TestCase):
             def __init__(self):
                 self.__read_count = 0
                 self.msg = Msg()
-                self.msg.header.type = MsgType.UNSUBSCRIBE.value
-                self.msg.header.method = Method.QUERY.value
+                self.msg.header.type = MsgType.UNSUBSCRIBE
+                self.msg.header.method = Method.QUERY
                 self.msg.header.check_sum = 0
                 self.msg.topic = MessageConverter.str_to_bytes('/aaaa')
                 self.msg.data = MessageConverter.str_to_bytes('00000000')
@@ -122,8 +122,8 @@ class TestCommHandler(TestCase):
             def __init__(self):
                 self.__read_count = 0
                 self.msg = Msg()
-                self.msg.header.type = MsgType.UNSUBSCRIBE.value
-                self.msg.header.method = Method.QUERY.value
+                self.msg.header.type = MsgType.UNSUBSCRIBE
+                self.msg.header.method = Method.QUERY
                 self.msg.header.check_sum = 0
                 self.msg.topic = bytearray(128)
                 self.msg.data = bytearray(4096) 
@@ -175,16 +175,16 @@ class TestCommHandler(TestCase):
             def __init__(self):
                 self.__read_count = 0
                 self.msg1 = Msg()
-                self.msg1.header.type = MsgType.UNSUBSCRIBE.value
-                self.msg1.header.method = Method.QUERY.value
+                self.msg1.header.type = MsgType.UNSUBSCRIBE
+                self.msg1.header.method = Method.QUERY
                 self.msg1.header.check_sum = 0
                 self.msg1.topic = bytearray(128)
                 self.msg1.data = bytearray(256) 
                 self.msg1.prepare()
 
                 self.msg2 = Msg()
-                self.msg2.header.type = MsgType.PUBLISH.value
-                self.msg2.header.method = Method.REQUEST.value
+                self.msg2.header.type = MsgType.PUBLISH
+                self.msg2.header.method = Method.REQUEST
                 self.msg2.header.check_sum = 0
                 self.msg2.topic = bytearray(188)
                 self.msg2.data = bytearray(512) 
@@ -235,16 +235,16 @@ class TestCommHandler(TestCase):
             def __init__(self):
                 self.__read_count = 0
                 self.msg1 = Msg()
-                self.msg1.header.type = MsgType.UNSUBSCRIBE.value
-                self.msg1.header.method = Method.QUERY.value
+                self.msg1.header.type = MsgType.UNSUBSCRIBE
+                self.msg1.header.method = Method.QUERY
                 self.msg1.header.check_sum = 0
                 self.msg1.topic = bytearray(128)
                 self.msg1.data = bytearray(256) 
                 self.msg1.prepare()
 
                 self.msg2 = Msg()
-                self.msg2.header.type = MsgType.PUBLISH.value
-                self.msg2.header.method = Method.REQUEST.value
+                self.msg2.header.type = MsgType.PUBLISH
+                self.msg2.header.method = Method.REQUEST
                 self.msg2.header.check_sum = 0
                 self.msg2.topic = bytearray(188)
                 self.msg2.data = bytearray(512) 

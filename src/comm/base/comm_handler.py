@@ -1,8 +1,6 @@
 # coding: utf-8
 
 import struct
-import threading
-
 from enum import Enum
 from typing import Callable
 from src.comm.base.comm import Comm
@@ -13,6 +11,7 @@ from src.comm.base.msg import (MSG_FLAG,
                                calc_checksum)
 from src.connection import ConnectionState
 from src.log.logger import Logger
+from src.utils.str import bytes_to_hex_format
 
 
 class MsgCompleteness(Enum):
@@ -204,9 +203,9 @@ class CommHandler:
         return self.__current_msg.copy()
 
     def __read_data(self) -> Msg:
-        len = 0
+        length = 0
         try:
-            len = self.__comm.recv(
+            length = self.__comm.recv(
                 self.__buffer,
                 self.__buffer_data_start_offset + self.__buffer_data_len,
                 self.__buffer_left_size()
@@ -215,11 +214,11 @@ class CommHandler:
             self.__logger.warn('recv exception: {0}'.format(str(e)))
             return None
 
-        if len <= 0:
-            self.__logger.warn('recv len == {0}'.format(len))
+        if length <= 0:
+            self.__logger.warn('recv len == {0}'.format(length))
             return None
 
-        self.__buffer_data_len += len
+        self.__buffer_data_len += length
 
         if self.__msg_completeness == MsgCompleteness.NONE:
             return self.__read_msg_flag_from_buffer()

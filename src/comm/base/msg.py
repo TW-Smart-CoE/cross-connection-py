@@ -37,8 +37,8 @@ class Method(Enum):
 @dataclass
 class MsgHeader:
     flag: int = MSG_FLAG
-    type: int = MsgType.PUBLISH.value
-    method: int = Method.REPORT.value
+    type: MsgType = MsgType.PUBLISH
+    method: Method = Method.REPORT
     topic_len: int = 0
     data_len: int = 0
     check_sum: int = 0
@@ -51,8 +51,8 @@ class MsgHeader:
 
         result = struct.unpack('>IBBHHHI', buffer)
         self.flag = result[0]
-        self.type = result[1]
-        self.method = result[2]
+        self.type = MsgType(result[1])
+        self.method = Method(result[2])
         self.topic_len = result[3]
         self.data_len = result[4]
         self.check_sum = result[5]
@@ -67,8 +67,8 @@ class MsgHeader:
             dst_byte_array,
             0,
             self.flag,
-            self.type,
-            self.method,
+            self.type.value,
+            self.method.value,
             self.topic_len,
             self.data_len,
             self.check_sum,
@@ -121,8 +121,10 @@ class Msg:
         self.header.to_bytes(byte_arr)
 
         byte_arr[MSG_HEADER_LEN:MSG_HEADER_LEN + len(self.topic)] = self.topic
-        byte_arr[MSG_HEADER_LEN + len(self.topic):
-                 MSG_HEADER_LEN + len(self.topic) + len(self.data)] = self.data
+        if self.data is not None:
+            byte_arr[MSG_HEADER_LEN + len(self.topic):
+                     MSG_HEADER_LEN + len(self.topic)
+                     + len(self.data)] = self.data
 
         return bytes(byte_arr)
 
