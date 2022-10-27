@@ -1,16 +1,17 @@
 # coding: utf-8
 
+from concurrent.futures import ThreadPoolExecutor
 from unittest import TestCase
 from src.comm.base.comm import Comm
 from src.comm.base.comm_handler import CommHandler
 from src.comm.base.msg import Msg, MsgType, Method
 from src.log.logger import DefaultLogger
-from src.utils.message_converter import MessageConvert
+from src.utils.message_converter import MessageConverter
      
 
 class TestCommHandler(TestCase):
     def setUp(self):
-        pass
+        self.__thread_pool = ThreadPoolExecutor(max_workers=5)
     
     def test_handler_receive_one_packet(self):
         result = []
@@ -26,8 +27,8 @@ class TestCommHandler(TestCase):
                     self.msg.header.type = MsgType.UNSUBSCRIBE.value
                     self.msg.header.method = Method.QUERY.value
                     self.msg.header.check_sum = 0
-                    self.msg.topic = MessageConvert.str_to_bytes('/aaaa')
-                    self.msg.data = MessageConvert.str_to_bytes('00000000')
+                    self.msg.topic = MessageConverter.str_to_bytes('/aaaa')
+                    self.msg.data = MessageConverter.str_to_bytes('00000000')
                     self.msg.prepare()
 
                     buf[offset:] = self.msg.to_bytes()
@@ -53,11 +54,11 @@ class TestCommHandler(TestCase):
             on_comm_close_listener=lambda handler, b: print(
                 'close (passive = {0})'.format(b)),
             on_msg_arrived_listener=lambda msg: result.append(msg.length()),
-            on_connection_state_changed_listener=lambda state, e: print(state.name, e)
+            on_conn_state_changed_listener=lambda state, e: print(state.name, e)
         )
 
-        comm_handler.start()
-        comm_handler.join()
+        future = self.__thread_pool.submit(comm_handler.run)
+        future.result()
 
         self.assertEqual(comm.msg.length(), result[0])
 
@@ -71,8 +72,8 @@ class TestCommHandler(TestCase):
                 self.msg.header.type = MsgType.UNSUBSCRIBE.value
                 self.msg.header.method = Method.QUERY.value
                 self.msg.header.check_sum = 0
-                self.msg.topic = MessageConvert.str_to_bytes('/aaaa')
-                self.msg.data = MessageConvert.str_to_bytes('00000000')
+                self.msg.topic = MessageConverter.str_to_bytes('/aaaa')
+                self.msg.data = MessageConverter.str_to_bytes('00000000')
                 self.msg.prepare()
                 
             def recv(self, buf: bytearray, offset: int, length: int) -> int:
@@ -107,11 +108,11 @@ class TestCommHandler(TestCase):
             on_comm_close_listener=lambda handler, b: print(
                 'close (passive = {0})'.format(b)),
             on_msg_arrived_listener=lambda msg: result.append(msg.length()),
-            on_connection_state_changed_listener=lambda state, e: print(state.name, e)
+            on_conn_state_changed_listener=lambda state, e: print(state.name, e)
         )
 
-        comm_handler.start()
-        comm_handler.join()
+        future = self.__thread_pool.submit(comm_handler.run)
+        future.result()
 
         self.assertEqual(comm.msg.length(), result[0])
 
@@ -160,11 +161,11 @@ class TestCommHandler(TestCase):
             on_comm_close_listener=lambda handler, b: print(
                 'close (passive = {0})'.format(b)),
             on_msg_arrived_listener=lambda msg: result.append(msg.length()),
-            on_connection_state_changed_listener=lambda state, e: print(state.name, e)
+            on_conn_state_changed_listener=lambda state, e: print(state.name, e)
         )
 
-        comm_handler.start()
-        comm_handler.join()
+        future = self.__thread_pool.submit(comm_handler.run)
+        future.result()
 
         self.assertEqual(comm.msg.length(), result[0])
 
@@ -218,11 +219,11 @@ class TestCommHandler(TestCase):
             on_comm_close_listener=lambda handler, b: print(
                 'close (passive = {0})'.format(b)),
             on_msg_arrived_listener=lambda msg: result.append(msg.length()),
-            on_connection_state_changed_listener=lambda state, e: print(state.name, e)
+            on_conn_state_changed_listener=lambda state, e: print(state.name, e)
         )
 
-        comm_handler.start()
-        comm_handler.join()
+        future = self.__thread_pool.submit(comm_handler.run)
+        future.result()
 
         self.assertEqual(comm.msg1.length(), result[0])
         self.assertEqual(comm.msg2.length(), result[1])
@@ -283,11 +284,11 @@ class TestCommHandler(TestCase):
             on_comm_close_listener=lambda handler, b: print(
                 'close (passive = {0})'.format(b)),
             on_msg_arrived_listener=lambda msg: result.append(msg.length()),
-            on_connection_state_changed_listener=lambda state, e: print(state.name, e)
+            on_conn_state_changed_listener=lambda state, e: print(state.name, e)
         )
 
-        comm_handler.start()
-        comm_handler.join()
+        future = self.__thread_pool.submit(comm_handler.run)
+        future.result()
 
         self.assertEqual(comm.msg1.length(), result[0])
         self.assertEqual(comm.msg2.length(), result[1])

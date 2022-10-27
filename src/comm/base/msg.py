@@ -4,7 +4,7 @@ from email import header
 import struct
 from dataclasses import dataclass
 from enum import Enum
-from src.utils.message_converter import MessageConvert
+from src.utils.message_converter import MessageConverter
 
 
 MSG_HEADER_LEN = 16
@@ -112,11 +112,8 @@ class Msg:
         if self.topic is None:
             raise Exception('topic is None')
 
-        if self.data is None:
-            raise Exception('data is None')
-
         self.header.topic_len = len(self.topic)
-        self.header.data_len = len(self.data)
+        self.header.data_len = 0 if self.data is None else len(self.data)
         self.header.check_sum = calc_checksum(self)
 
     def to_bytes(self) -> bytes:
@@ -143,7 +140,7 @@ def create_msg(
     topic: str,
     data: bytes
 ) -> Msg:
-    topic_bytes = MessageConvert.str_to_bytes(topic)
+    topic_bytes = MessageConverter.str_to_bytes(topic)
 
     header = MsgHeader()
     header.type = msg_type
@@ -167,7 +164,8 @@ def calc_checksum(msg: Msg) -> int:
     for byte in msg.topic:
         checksum += byte
 
-    for byte in msg.data:
-        checksum += byte
+    if msg.data is not None:
+        for byte in msg.data:
+            checksum += byte
 
     return checksum

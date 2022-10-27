@@ -4,7 +4,7 @@ from unittest import TestCase
 from src.comm.base.msg import Method, MsgType, MsgHeader, Msg, calc_checksum
 from src.comm.base.msg import MsgHeader
 from src.comm.base.msg import MsgType
-from src.utils.message_converter import MessageConvert
+from src.utils.message_converter import MessageConverter
 
 
 class TestMsg(TestCase):
@@ -32,8 +32,8 @@ class TestMsg(TestCase):
         msg.header.type = MsgType.UNSUBSCRIBE.value
         msg.header.method = Method.QUERY.value
         msg.header.check_sum = 0
-        msg.topic = MessageConvert.str_to_bytes('/aaaa')
-        msg.data = MessageConvert.str_to_bytes('00000000')
+        msg.topic = MessageConverter.str_to_bytes('/aaaa')
+        msg.data = MessageConverter.str_to_bytes('00000000')
 
         msg.prepare()
 

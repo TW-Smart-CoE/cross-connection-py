@@ -12,6 +12,9 @@ class ClientCommPubSubManager:
         self.__logger: Logger = logger
         self.__subscription_dict: Dict[str, Subscription] = dict()
 
+    def set_logger(self, logger: Logger):
+        self.__logger = logger
+
     def subscribe(self, subscription: Subscription):
         self.__subscription_dict[subscription.topic] = subscription
 

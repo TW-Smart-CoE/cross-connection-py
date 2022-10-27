@@ -21,7 +21,7 @@ class MsgCompleteness(Enum):
     HEADER = 2
 
 
-class CommHandler(threading.Thread):
+class CommHandler:
     BUFFER_SIZE = 4096
     INT_SIZE_BYTE = 4
 
@@ -32,10 +32,9 @@ class CommHandler(threading.Thread):
         logger: Logger,
         on_comm_close_listener: Callable[[any, bool], None] = None,
         on_msg_arrived_listener: Callable[[Msg], None] = None,
-        on_connection_state_changed_listener:
+        on_conn_state_changed_listener:
             Callable[[ConnectionState, Exception], None] = None,
     ):
-        threading.Thread.__init__(self)
         self.__is_close: bool = False
         self.__msg_completeness: MsgCompleteness = MsgCompleteness.NONE
         self.__is_client: bool = is_client
@@ -48,7 +47,7 @@ class CommHandler(threading.Thread):
         self.__on_msg_arrived_listener = \
             on_msg_arrived_listener
         self.__on_connection_state_changed_listener = \
-            on_connection_state_changed_listener
+            on_conn_state_changed_listener
         self.__buffer: bytearray = bytearray(CommHandler.BUFFER_SIZE)
         self.__buffer_data_start_offset = 0
         self.__buffer_data_len = 0
@@ -94,10 +93,12 @@ class CommHandler(threading.Thread):
                 # clear completeness state
                 self.__msg_completeness = MsgCompleteness.NONE
 
-    def send(self, msg: Msg):
+    def send(self, msg: Msg) -> int:
         if not self.__is_close:
-            msg.header.check_sum = calc_checksum(msg)
-            self.__comm.send(msg.to_bytes())
+            msg.prepare()
+            return self.__comm.send(msg.to_bytes())
+        else:
+            return 0
 
     def close(self, is_passive: bool):
         if not is_passive:

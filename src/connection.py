@@ -45,7 +45,7 @@ class Connection(Module):
         raise NotImplementedError
 
     @abstractmethod
-    def getState(self) -> ConnectionState:
+    def get_state(self) -> ConnectionState:
         raise NotImplementedError
 
     @abstractmethod
