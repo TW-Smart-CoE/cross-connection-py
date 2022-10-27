@@ -127,10 +127,11 @@ class CommHandler(threading.Thread):
                        self.__buffer_data_len -
                        CommHandler.INT_SIZE_BYTE
                        ):
-            if struct.unpack_from(
+            flag = struct.unpack_from(
                 '>I',
                 self.__buffer,
-                    self.__buffer_data_start_offset) == MSG_FLAG:
+                self.__buffer_data_start_offset + i)
+            if flag[0] == MSG_FLAG:
                 found = True
                 if i != 0:
                     self.__buffer[0:self.__buffer_data_len] = \
@@ -164,7 +165,7 @@ class CommHandler(threading.Thread):
         return self.__read_msg_body_from_buffer()
 
     def __read_msg_body_from_buffer(self) -> Msg:
-        if self.__buffer_data_len > \
+        if self.__buffer_data_len < \
             MSG_HEADER_LEN + self.__current_header.topic_len + \
                 self.__current_header.data_len:
             return self.__read_data()

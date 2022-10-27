@@ -91,11 +91,11 @@ class Msg:
 
     def __init__(
         self,
-        header: MsgHeader = MsgHeader(),
+        header: MsgHeader = None,
         topic: bytes = None,
         data: bytes = None,
     ):
-        self.header = header
+        self.header = header or MsgHeader()
         self.topic = topic
         self.data = data
 

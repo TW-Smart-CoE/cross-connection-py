@@ -6,63 +6,288 @@ from src.comm.base.comm_handler import CommHandler
 from src.comm.base.msg import Msg, MsgType, Method
 from src.log.logger import DefaultLogger
 from src.utils.message_converter import MessageConvert
-
-
-class MockComm(Comm):
-    def recv(self, buf: bytearray, offset: int, len: int) -> int:
-        msg = Msg()
-        msg.header.type = MsgType.UNSUBSCRIBE.value
-        msg.header.method = Method.QUERY.value
-        msg.header.check_sum = 0
-        msg.topic = MessageConvert.str_to_bytes('/aaaa')
-        msg.data = MessageConvert.str_to_bytes('00000000')
-        msg.prepare()
-
-        buf[offset:] = msg.to_bytes()
-        return msg.length()
-
-    def send(self, data: bytes) -> int:
-        return len(data)
-
-    def connect(self):
-        print('connect ok')
-
-    def close(self):
-        pass
      
 
 class TestCommHandler(TestCase):
     def setUp(self):
-        self.__buffer = bytearray(16)
-        for i in range (0, 16):
-            self.__buffer[i] = i
+        pass
     
-    def test_handler(self):
+    def test_handler_receive_one_packet(self):
+        result = []
+        class MockComm(Comm):
+            def __init__(self):
+                self.__read_count = 0
+                self.msg = Msg()
+                
+            def recv(self, buf: bytearray, offset: int, len: int) -> int:
+                if self.__read_count == 0:
+                    self.__read_count += 1
+
+                    self.msg.header.type = MsgType.UNSUBSCRIBE.value
+                    self.msg.header.method = Method.QUERY.value
+                    self.msg.header.check_sum = 0
+                    self.msg.topic = MessageConvert.str_to_bytes('/aaaa')
+                    self.msg.data = MessageConvert.str_to_bytes('00000000')
+                    self.msg.prepare()
+
+                    buf[offset:] = self.msg.to_bytes()
+                    return self.msg.length()
+                else:
+                    return -1
+
+            def send(self, data: bytes) -> int:
+                return len(data)
+
+            def connect(self):
+                pass
+
+            def close(self):
+                pass
+
+
+        comm = MockComm()
         comm_handler = CommHandler(
             is_client=True,
-            comm=MockComm(),
+            comm=comm,
             logger=DefaultLogger(),
             on_comm_close_listener=lambda handler, b: print(
                 'close (passive = {0})'.format(b)),
-            on_msg_arrived_listener=lambda msg: print(msg.length()),
+            on_msg_arrived_listener=lambda msg: result.append(msg.length()),
             on_connection_state_changed_listener=lambda state, e: print(state.name, e)
         )
 
         comm_handler.start()
+        comm_handler.join()
 
-    # def test_buffer_copy(self):
-    #     print(bytes_to_hex_format(self.__buffer))
-    #     self.__buffer[0:8] = self.__buffer[4:12]
-    #     print(bytes_to_hex_format(self.__buffer))
+        self.assertEqual(comm.msg.length(), result[0])
 
-    # def test_struct_unkpack_from(self):
-    #     print(struct.unpack_from('>B', self.__buffer, 5))
 
-    # def test_buffer_copy(self):
-    #     buffer = bytes(self.__buffer)
+    def test_handler_receive_half_packet(self):
+        result = []
+        class MockComm(Comm):
+            def __init__(self):
+                self.__read_count = 0
+                self.msg = Msg()
+                self.msg.header.type = MsgType.UNSUBSCRIBE.value
+                self.msg.header.method = Method.QUERY.value
+                self.msg.header.check_sum = 0
+                self.msg.topic = MessageConvert.str_to_bytes('/aaaa')
+                self.msg.data = MessageConvert.str_to_bytes('00000000')
+                self.msg.prepare()
+                
+            def recv(self, buf: bytearray, offset: int, length: int) -> int:
+                if self.__read_count == 0:
+                    self.__read_count += 1
+                    data = self.msg.to_bytes()[:10]
+                    buf[offset:] = data
+                    return len(data)
+                elif self.__read_count == 1:
+                    self.__read_count += 1
+                    data = self.msg.to_bytes()[10:]
+                    buf[offset:] = data
+                    return len(data)
+                else:
+                    return 0
 
-    #     dst_buffer = bytes(buffer)
-    #     dst_buffer[2] = 3
+            def send(self, data: bytes) -> int:
+                return len(data)
 
-    #     for i in range(0, 16):
-    #         print(buffer[i])
+            def connect(self):
+                pass
+
+            def close(self):
+                pass
+
+
+        comm = MockComm()
+        comm_handler = CommHandler(
+            is_client=True,
+            comm=comm,
+            logger=DefaultLogger(),
+            on_comm_close_listener=lambda handler, b: print(
+                'close (passive = {0})'.format(b)),
+            on_msg_arrived_listener=lambda msg: result.append(msg.length()),
+            on_connection_state_changed_listener=lambda state, e: print(state.name, e)
+        )
+
+        comm_handler.start()
+        comm_handler.join()
+
+        self.assertEqual(comm.msg.length(), result[0])
+
+    def test_handler_receive_big_packet(self):
+        result = []
+        class MockComm(Comm):
+            def __init__(self):
+                self.__read_count = 0
+                self.msg = Msg()
+                self.msg.header.type = MsgType.UNSUBSCRIBE.value
+                self.msg.header.method = Method.QUERY.value
+                self.msg.header.check_sum = 0
+                self.msg.topic = bytearray(128)
+                self.msg.data = bytearray(4096) 
+                self.msg.prepare()
+                
+            def recv(self, buf: bytearray, offset: int, length: int) -> int:
+                if self.__read_count == 0:
+                    self.__read_count += 1
+                    data = self.msg.to_bytes()[:length]
+                    buf[offset:] = data
+                    return len(data)
+                elif self.__read_count == 1:
+                    self.__read_count += 1
+                    data = self.msg.to_bytes()[CommHandler.BUFFER_SIZE:]
+                    buf[offset:] = data
+                    return len(data)
+                else:
+                    return 0
+
+            def send(self, data: bytes) -> int:
+                return len(data)
+
+            def connect(self):
+                pass
+
+            def close(self):
+                pass
+
+
+        comm = MockComm()
+        comm_handler = CommHandler(
+            is_client=True,
+            comm=comm,
+            logger=DefaultLogger(),
+            on_comm_close_listener=lambda handler, b: print(
+                'close (passive = {0})'.format(b)),
+            on_msg_arrived_listener=lambda msg: result.append(msg.length()),
+            on_connection_state_changed_listener=lambda state, e: print(state.name, e)
+        )
+
+        comm_handler.start()
+        comm_handler.join()
+
+        self.assertEqual(comm.msg.length(), result[0])
+
+    def test_handler_receive_packet_concat(self):
+        result = []
+        class MockComm(Comm):
+            def __init__(self):
+                self.__read_count = 0
+                self.msg1 = Msg()
+                self.msg1.header.type = MsgType.UNSUBSCRIBE.value
+                self.msg1.header.method = Method.QUERY.value
+                self.msg1.header.check_sum = 0
+                self.msg1.topic = bytearray(128)
+                self.msg1.data = bytearray(256) 
+                self.msg1.prepare()
+
+                self.msg2 = Msg()
+                self.msg2.header.type = MsgType.PUBLISH.value
+                self.msg2.header.method = Method.REQUEST.value
+                self.msg2.header.check_sum = 0
+                self.msg2.topic = bytearray(188)
+                self.msg2.data = bytearray(512) 
+                self.msg2.prepare()
+                
+            def recv(self, buf: bytearray, offset: int, length: int) -> int:
+                if self.__read_count == 0:
+                    self.__read_count += 1
+                    data1 = self.msg1.to_bytes()
+                    data2 = self.msg2.to_bytes()
+                    buf[offset:] = data1
+                    buf[offset + len(data1):] = data2
+                    return len(data1) + len(data2)
+                else:
+                    return 0
+
+            def send(self, data: bytes) -> int:
+                return len(data)
+
+            def connect(self):
+                pass
+
+            def close(self):
+                pass
+
+
+        comm = MockComm()
+        comm_handler = CommHandler(
+            is_client=True,
+            comm=comm,
+            logger=DefaultLogger(),
+            on_comm_close_listener=lambda handler, b: print(
+                'close (passive = {0})'.format(b)),
+            on_msg_arrived_listener=lambda msg: result.append(msg.length()),
+            on_connection_state_changed_listener=lambda state, e: print(state.name, e)
+        )
+
+        comm_handler.start()
+        comm_handler.join()
+
+        self.assertEqual(comm.msg1.length(), result[0])
+        self.assertEqual(comm.msg2.length(), result[1])
+
+
+    def test_handler_receive_packet_concat_recv_twice(self):
+        result = []
+        class MockComm(Comm):
+            def __init__(self):
+                self.__read_count = 0
+                self.msg1 = Msg()
+                self.msg1.header.type = MsgType.UNSUBSCRIBE.value
+                self.msg1.header.method = Method.QUERY.value
+                self.msg1.header.check_sum = 0
+                self.msg1.topic = bytearray(128)
+                self.msg1.data = bytearray(256) 
+                self.msg1.prepare()
+
+                self.msg2 = Msg()
+                self.msg2.header.type = MsgType.PUBLISH.value
+                self.msg2.header.method = Method.REQUEST.value
+                self.msg2.header.check_sum = 0
+                self.msg2.topic = bytearray(188)
+                self.msg2.data = bytearray(512) 
+                self.msg2.prepare()
+                
+            def recv(self, buf: bytearray, offset: int, length: int) -> int:
+                if self.__read_count == 0:
+                    self.__read_count += 1
+                    data1 = self.msg1.to_bytes()
+                    data2 = self.msg2.to_bytes()[:200]
+                    buf[offset:] = data1
+                    buf[offset + len(data1):] = data2
+                    return len(data1) + len(data2)
+                elif self.__read_count == 1:
+                    self.__read_count += 2
+                    data = self.msg2.to_bytes()[200:]
+                    buf[offset:] = data
+                    return len(data)
+                else:
+                    return 0
+
+            def send(self, data: bytes) -> int:
+                return len(data)
+
+            def connect(self):
+                pass
+
+            def close(self):
+                pass
+
+
+        comm = MockComm()
+        comm_handler = CommHandler(
+            is_client=True,
+            comm=comm,
+            logger=DefaultLogger(),
+            on_comm_close_listener=lambda handler, b: print(
+                'close (passive = {0})'.format(b)),
+            on_msg_arrived_listener=lambda msg: result.append(msg.length()),
+            on_connection_state_changed_listener=lambda state, e: print(state.name, e)
+        )
+
+        comm_handler.start()
+        comm_handler.join()
+
+        self.assertEqual(comm.msg1.length(), result[0])
+        self.assertEqual(comm.msg2.length(), result[1])

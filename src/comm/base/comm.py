@@ -5,7 +5,7 @@ from abc import ABC, abstractmethod
 
 class Comm(ABC):
     @abstractmethod
-    def recv(self, buf: bytearray, offset: int, len: int) -> int:
+    def recv(self, buf: bytearray, offset: int, length: int) -> int:
         raise NotImplementedError
 
     @abstractmethod
