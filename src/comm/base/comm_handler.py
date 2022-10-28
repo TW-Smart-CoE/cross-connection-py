@@ -11,7 +11,6 @@ from src.comm.base.msg import (MSG_FLAG,
                                calc_checksum)
 from src.connection import ConnectionState
 from src.log.logger import Logger
-from src.utils.str import bytes_to_hex_format
 
 
 class MsgCompleteness(Enum):
@@ -34,7 +33,7 @@ class CommHandler:
         on_conn_state_changed_listener:
             Callable[[ConnectionState, Exception], None] = None,
     ):
-        self.__is_close: bool = False
+        self.__is_close: bool = True
         self.__msg_completeness: MsgCompleteness = MsgCompleteness.NONE
         self.__is_client: bool = is_client
         self.__comm: Comm = comm
