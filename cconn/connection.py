@@ -3,8 +3,8 @@
 from abc import ABC, abstractmethod
 from enum import Enum
 from typing import Callable, Dict
-from src.module import Module
-from src.comm.base.msg import Method
+from cconn.module import Module
+from cconn.comm.base.msg import Method
 
 
 class ConnectionState(Enum):

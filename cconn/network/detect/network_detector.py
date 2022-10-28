@@ -2,7 +2,7 @@
 
 from abc import abstractmethod
 from typing import Callable, Dict
-from src.module import Module
+from cconn.module import Module
 
 
 class NetworkDetector(Module):

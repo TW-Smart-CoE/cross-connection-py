@@ -1,7 +1,7 @@
 # coding: utf-8
 
 from abc import ABC, abstractmethod
-from src.log.logger import Logger
+from cconn.log.logger import Logger
 
 
 class Module(ABC):

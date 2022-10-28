@@ -1,10 +1,10 @@
 # coding: utf-8
 
 from typing import Dict
-from src.comm.base.pubsub.subscription import Subscription
-from src.comm.base.topic_mapper import TopicMapper
-from src.log.logger import Logger
-from src.utils.topic_utils import TopicUtils
+from cconn.comm.base.pubsub.subscription import Subscription
+from cconn.comm.base.topic_mapper import TopicMapper
+from cconn.log.logger import Logger
+from cconn.utils.topic_utils import TopicUtils
 
 
 class ClientCommPubSubManager:

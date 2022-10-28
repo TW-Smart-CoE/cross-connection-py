@@ -1,7 +1,7 @@
 # coding: utf-8
 
 from socket import socket
-from src.comm.base.comm import Comm
+from cconn.comm.base.comm import Comm
 
 
 class TcpComm(Comm):

@@ -1,10 +1,10 @@
 # coding: utf-8
 
 from unittest import TestCase
-from src.comm.base.msg import Method, MsgType, MsgHeader, Msg, calc_checksum
-from src.comm.base.msg import MsgHeader
-from src.comm.base.msg import MsgType
-from src.utils.message_converter import MessageConverter
+from cconn.comm.base.msg import Method, MsgType, MsgHeader, Msg, calc_checksum
+from cconn.comm.base.msg import MsgHeader
+from cconn.comm.base.msg import MsgType
+from cconn.utils.message_converter import MessageConverter
 
 
 class TestMsg(TestCase):

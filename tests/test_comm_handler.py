@@ -2,11 +2,11 @@
 
 from concurrent.futures import ThreadPoolExecutor
 from unittest import TestCase
-from src.comm.base.comm import Comm
-from src.comm.base.comm_handler import CommHandler
-from src.comm.base.msg import Msg, MsgType, Method
-from src.log.logger import DefaultLogger
-from src.utils.message_converter import MessageConverter
+from cconn.comm.base.comm import Comm
+from cconn.comm.base.comm_handler import CommHandler
+from cconn.comm.base.msg import Msg, MsgType, Method
+from cconn.log.logger import DefaultLogger
+from cconn.utils.message_converter import MessageConverter
      
 
 class TestCommHandler(TestCase):

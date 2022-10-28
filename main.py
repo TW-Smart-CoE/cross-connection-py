@@ -1,12 +1,12 @@
 # coding: utf-8
 
 from typing import Dict
-from src.connection import ConnectionState
-from src.connection_factory import ConnectionFactory, ConnectionType, NetworkDiscoveryType
-from src.definitions.prop_keys import PropKeys
-from src.utils.message_converter import MessageConverter
-from src.utils.props import PropsUtils
-from src.comm.base.msg import Method
+from cconn.connection import ConnectionState
+from cconn.connection_factory import ConnectionFactory, ConnectionType, NetworkDiscoveryType
+from cconn.definitions.prop_keys import PropKeys
+from cconn.utils.message_converter import MessageConverter
+from cconn.utils.props import PropsUtils
+from cconn.comm.base.msg import Method
 
 TEST_TOPIC = 'command/cluster'
 

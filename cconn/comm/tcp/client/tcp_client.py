@@ -5,23 +5,23 @@ from concurrent.futures import ThreadPoolExecutor
 from socket import socket
 from threading import Thread
 from typing import Callable, Dict, List
-from src.comm.base.msg import Msg, MsgHeader, MsgType
-from src.comm.base.comm_handler import CommHandler
-from src.comm.base.pubsub.client_comm_pubsub_manager import (
+from cconn.comm.base.msg import Msg, MsgHeader, MsgType
+from cconn.comm.base.comm_handler import CommHandler
+from cconn.comm.base.pubsub.client_comm_pubsub_manager import (
     ClientCommPubSubManager)
-from src.comm.base.pubsub.subscription import Subscription
-from src.comm.base.topic_mapper import TopicMapper
-from src.comm.tcp.tcp_comm import TcpComm
-from src.connection import (
+from cconn.comm.base.pubsub.subscription import Subscription
+from cconn.comm.base.topic_mapper import TopicMapper
+from cconn.comm.tcp.tcp_comm import TcpComm
+from cconn.connection import (
     Connection,
     ConnectionState,
     Method,
     OnActionListener,
 )
-from src.definitions.prop_keys import PropKeys
-from src.log.logger import Logger, DefaultLogger
-from src.utils.message_converter import MessageConverter
-from src.utils.props import PropsUtils
+from cconn.definitions.prop_keys import PropKeys
+from cconn.log.logger import Logger, DefaultLogger
+from cconn.utils.message_converter import MessageConverter
+from cconn.utils.props import PropsUtils
 
 
 class TcpClient(Connection):

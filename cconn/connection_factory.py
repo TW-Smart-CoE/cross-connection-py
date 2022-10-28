@@ -2,10 +2,10 @@
 
 from abc import abstractmethod
 from enum import Enum
-from src.comm.tcp.client.tcp_client import TcpClient
-from src.connection import Connection
-from src.network.detect.network_detector import NetworkDetector
-from src.network.detect.udp.udp_detector import UdpDetector
+from cconn.comm.tcp.client.tcp_client import TcpClient
+from cconn.connection import Connection
+from cconn.network.detect.network_detector import NetworkDetector
+from cconn.network.detect.udp.udp_detector import UdpDetector
 
 
 class ConnectionType(Enum):

@@ -2,7 +2,7 @@
 
 
 from typing import Tuple
-from src.connection import Method
+from cconn.connection import Method
 
 
 class TopicMapper:

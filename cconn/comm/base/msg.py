@@ -4,7 +4,7 @@ from email import header
 import struct
 from dataclasses import dataclass
 from enum import Enum
-from src.utils.message_converter import MessageConverter
+from cconn.utils.message_converter import MessageConverter
 
 
 MSG_HEADER_LEN = 16

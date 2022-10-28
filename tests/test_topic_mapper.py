@@ -1,8 +1,8 @@
 # coding: utf-8
 
 from unittest import TestCase
-from src.comm.base.msg import Method
-from src.comm.base.topic_mapper import TopicMapper
+from cconn.comm.base.msg import Method
+from cconn.comm.base.topic_mapper import TopicMapper
 
 
 class TestTopicMapper(TestCase):

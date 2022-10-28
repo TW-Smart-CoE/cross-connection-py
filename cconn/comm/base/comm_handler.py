@@ -3,14 +3,14 @@
 import struct
 from enum import Enum
 from typing import Callable
-from src.comm.base.comm import Comm
-from src.comm.base.msg import (MSG_FLAG,
+from cconn.comm.base.comm import Comm
+from cconn.comm.base.msg import (MSG_FLAG,
                                MSG_HEADER_LEN,
                                Msg,
                                MsgHeader,
                                calc_checksum)
-from src.connection import ConnectionState
-from src.log.logger import Logger
+from cconn.connection import ConnectionState
+from cconn.log.logger import Logger
 
 
 class MsgCompleteness(Enum):

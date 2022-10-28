@@ -4,11 +4,11 @@ from asyncio import FastChildWatcher
 import ipaddress
 from socket import socket, AF_INET, SOCK_DGRAM
 from typing import Callable, Dict, Final
-from src.log.logger import DefaultLogger, Logger
-from src.network.detect.network_detector import NetworkDetector
-from src.definitions.prop_keys import PropKeys
-from src.utils.props import PropsUtils
-from src.network.detect.udp.broadcast_msg import (
+from cconn.log.logger import DefaultLogger, Logger
+from cconn.network.detect.network_detector import NetworkDetector
+from cconn.definitions.prop_keys import PropKeys
+from cconn.utils.props import PropsUtils
+from cconn.network.detect.udp.broadcast_msg import (
     BROADCAST_MSG_HEADER_LEN,
     DEFAULT_BROADCAST_FLAG,
     BroadcastMsg,

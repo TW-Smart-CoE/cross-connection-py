@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from typing import Callable
-from src.comm.base.msg import Method
+from cconn.comm.base.msg import Method
 
 
 @dataclass
