@@ -33,7 +33,7 @@ class CommHandler:
         on_conn_state_changed_listener:
             Callable[[ConnectionState, Exception], None] = None,
     ):
-        self.__is_close: bool = True
+        self.__is_close: bool = False
         self.__msg_completeness: MsgCompleteness = MsgCompleteness.NONE
         self.__is_client: bool = is_client
         self.__comm: Comm = comm

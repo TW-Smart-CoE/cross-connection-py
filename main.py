@@ -21,7 +21,7 @@ def on_data_arrived(topic: str, method: Method, data: bytes):
 def on_conn_state_changed(conn_state: ConnectionState, e: Exception):
    print(conn_state)
    if conn_state == ConnectionState.CONNECTED:
-      connection.subscribe(TEST_TOPIC, Method.REQUEST, on_data_arrived)
+      connection.subscribe('command/+', Method.REQUEST, on_data_arrived)
 
 connection.add_on_connection_state_changed_listener(on_conn_state_changed)
 
@@ -50,5 +50,7 @@ if __name__ == '__main__':
    count = 1
    while True:
       input()
-      connection.publish(TEST_TOPIC, Method.REQUEST, MessageConverter.str_to_bytes('data {0}'.format(count)))
+      if connection.get_state() == ConnectionState.CONNECTED:
+         connection.publish(TEST_TOPIC, Method.REQUEST, MessageConverter.str_to_bytes('data {0}'.format(count)))
+
       count += 1
