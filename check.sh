@@ -2,7 +2,7 @@
 set -euo pipefail
 
 echo "[checkstyle]"
-pycodestyle ./src
+pycodestyle ./cconn
 
 echo "[unittest]"
 python -m unittest

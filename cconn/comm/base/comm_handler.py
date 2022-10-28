@@ -5,10 +5,10 @@ from enum import Enum
 from typing import Callable
 from cconn.comm.base.comm import Comm
 from cconn.comm.base.msg import (MSG_FLAG,
-                               MSG_HEADER_LEN,
-                               Msg,
-                               MsgHeader,
-                               calc_checksum)
+                                 MSG_HEADER_LEN,
+                                 Msg,
+                                 MsgHeader,
+                                 calc_checksum)
 from cconn.connection import ConnectionState
 from cconn.log.logger import Logger
 
