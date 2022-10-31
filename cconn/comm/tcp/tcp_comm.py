@@ -2,6 +2,7 @@
 
 from socket import socket
 from cconn.comm.base.comm import Comm
+from cconn.utils.str import bytes_to_hex_format
 
 
 class TcpComm(Comm):

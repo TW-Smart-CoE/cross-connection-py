@@ -1,8 +1,13 @@
 # coding: utf-8
 
-from asyncio import FastChildWatcher
 import ipaddress
-from socket import socket, AF_INET, SOCK_DGRAM
+from socket import (
+    socket,
+    AF_INET,
+    SOCK_DGRAM,
+    SOL_SOCKET,
+    SO_BROADCAST
+)
 from typing import Callable, Dict, Final
 from cconn.log.logger import DefaultLogger, Logger
 from cconn.network.detect.network_detector import NetworkDetector
@@ -49,6 +54,7 @@ class UdpDetector(NetworkDetector):
         )
 
         self.__receiver_sock = socket(AF_INET, SOCK_DGRAM)
+        self.__receiver_sock.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
         self.__receiver_sock.bind(('', self.__broadcast_port))
         self.__is_keep_receiving = True
 

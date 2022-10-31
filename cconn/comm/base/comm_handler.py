@@ -29,7 +29,7 @@ class CommHandler:
         comm: Comm,
         logger: Logger,
         on_comm_close_listener: Callable[[any, bool], None] = None,
-        on_msg_arrived_listener: Callable[[Msg], None] = None,
+        on_msg_arrived_listener: Callable[[any, Msg], None] = None,
         on_conn_state_changed_listener:
             Callable[[ConnectionState, Exception], None] = None,
     ):
@@ -63,7 +63,7 @@ class CommHandler:
 
     def __on_msg_arrived(self, msg: Msg):
         if self.__on_msg_arrived_listener is not None:
-            self.__on_msg_arrived_listener(msg)
+            self.__on_msg_arrived_listener(self, msg)
 
     def run(self):
         if self.__is_client:
@@ -71,7 +71,7 @@ class CommHandler:
                 self.__on_connection_state_changed(ConnectionState.CONNECTING)
                 self.__comm.connect()
             except Exception as e:
-                self.__logger.error('Connect failed: {0}'.format(str(e)))
+                self.__logger.error('connect failed: {0}'.format(str(e)))
                 self.close(True)
                 return
 
@@ -103,6 +103,7 @@ class CommHandler:
             self.__on_msg_arrived_listener = None
             self.__on_comm_close_listener = None
 
+        print('close')
         self.__is_close = True
 
         try:

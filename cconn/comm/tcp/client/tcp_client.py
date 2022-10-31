@@ -2,7 +2,7 @@
 
 import time
 from concurrent.futures import ThreadPoolExecutor
-from socket import socket
+from socket import AF_INET, SOCK_STREAM, socket
 from threading import Thread
 from typing import Callable, Dict, List
 from cconn.comm.base.msg import Msg, MsgHeader, MsgType
@@ -143,7 +143,7 @@ class TcpClient(Connection):
         if is_passive and self.__auto_reconnect:
             self.__executor.submit(self.__schedule_reconnect_task)
 
-    def __on_msg_arrived(self, msg: Msg):
+    def __on_msg_arrived(self, comm_handler: CommHandler, msg: Msg):
         if msg.header.type != MsgType.PUBLISH:
             pass
 
@@ -154,7 +154,7 @@ class TcpClient(Connection):
 
     def __tcp_connect_task(self):
         self.__subscribe_manager.clear()
-        self.__tcp_socket = socket()
+        self.__tcp_socket = socket(AF_INET, SOCK_STREAM)
 
         self.__comm_handler = CommHandler(
             is_client=True,

@@ -53,7 +53,7 @@ class TestCommHandler(TestCase):
             logger=DefaultLogger(),
             on_comm_close_listener=lambda handler, b: print(
                 'close (passive = {0})'.format(b)),
-            on_msg_arrived_listener=lambda msg: result.append(msg.length()),
+            on_msg_arrived_listener=lambda handler, msg: result.append(msg.length()),
             on_conn_state_changed_listener=lambda state, e: print(state.name, e)
         )
 
@@ -107,7 +107,7 @@ class TestCommHandler(TestCase):
             logger=DefaultLogger(),
             on_comm_close_listener=lambda handler, b: print(
                 'close (passive = {0})'.format(b)),
-            on_msg_arrived_listener=lambda msg: result.append(msg.length()),
+            on_msg_arrived_listener=lambda handler, msg: result.append(msg.length()),
             on_conn_state_changed_listener=lambda state, e: print(state.name, e)
         )
 
@@ -160,7 +160,7 @@ class TestCommHandler(TestCase):
             logger=DefaultLogger(),
             on_comm_close_listener=lambda handler, b: print(
                 'close (passive = {0})'.format(b)),
-            on_msg_arrived_listener=lambda msg: result.append(msg.length()),
+            on_msg_arrived_listener=lambda handler, msg: result.append(msg.length()),
             on_conn_state_changed_listener=lambda state, e: print(state.name, e)
         )
 
@@ -218,7 +218,7 @@ class TestCommHandler(TestCase):
             logger=DefaultLogger(),
             on_comm_close_listener=lambda handler, b: print(
                 'close (passive = {0})'.format(b)),
-            on_msg_arrived_listener=lambda msg: result.append(msg.length()),
+            on_msg_arrived_listener=lambda handler, msg: result.append(msg.length()),
             on_conn_state_changed_listener=lambda state, e: print(state.name, e)
         )
 
@@ -283,7 +283,7 @@ class TestCommHandler(TestCase):
             logger=DefaultLogger(),
             on_comm_close_listener=lambda handler, b: print(
                 'close (passive = {0})'.format(b)),
-            on_msg_arrived_listener=lambda msg: result.append(msg.length()),
+            on_msg_arrived_listener=lambda handler, msg: result.append(msg.length()),
             on_conn_state_changed_listener=lambda state, e: print(state.name, e)
         )
 

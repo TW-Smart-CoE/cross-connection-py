@@ -31,6 +31,8 @@ def on_found_service(config_props: Dict[str, str]):
    ip = PropsUtils.get_prop_str(config_props, PropKeys.PROP_UDP_DETECTOR_ON_FOUND_SERVICE_IP, '')
    port = PropsUtils.get_prop_int(config_props, PropKeys.PROP_UDP_DETECTOR_BROADCAST_PORT, 0)
 
+   print(f'found {ip} {port}')
+
    if ip != '' and port != 0:
       props = dict()
       props[PropKeys.PROP_IP] = ip
