@@ -104,9 +104,7 @@ class TcpServer(Server):
 
     def __clear_clients(self):
         self.__server_pub_sub_manager.clear_all_comm_wrappers()
-        client_count = self.__server_pub_sub_manager.client_count()
-        self.__logger.debug(
-            f'current client count = {client_count}')
+        self.__server_pub_sub_manager.client_count()
 
     def stop(self):
         try:
