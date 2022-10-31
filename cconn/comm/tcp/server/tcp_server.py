@@ -2,6 +2,7 @@
 
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial, partialmethod
+from http import client
 from socket import AF_INET, SOCK_STREAM, socket
 from typing import Dict
 from cconn.comm.base.comm_handler import CommHandler
@@ -55,9 +56,9 @@ class TcpServer(Server):
         is_passive: bool,
     ):
         self.__server_pub_sub_manager.remove_comm_wrapper(comm_handler.wrapper)
+        client_count = self.__server_pub_sub_manager.client_count()
         self.__logger.debug(
-            f'current client count = \
-                {self.__server_pub_sub_manager.client_count()}')
+            f'current client count = {client_count}')
 
     def __on_msg_arrived(
         self,
@@ -96,16 +97,16 @@ class TcpServer(Server):
                 comm_handler.wrapper = server_wrapper
 
                 self.__server_pub_sub_manager.add_comm_wrapper(server_wrapper)
+                client_count = self.__server_pub_sub_manager.client_count()
                 self.__logger.debug(
-                    f'current client count = \
-                        {self.__server_pub_sub_manager.client_count()}')
+                    f'current client count = {client_count}')
                 self.__executor.submit(server_wrapper.comm_handler.run)
 
     def __clear_clients(self):
         self.__server_pub_sub_manager.clear_all_comm_wrappers()
+        client_count = self.__server_pub_sub_manager.client_count()
         self.__logger.debug(
-            f'current client count = \
-                {self.__server_pub_sub_manager.client_count()}')
+            f'current client count = {client_count}')
 
     def stop(self):
         try:
