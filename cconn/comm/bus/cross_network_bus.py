@@ -3,8 +3,8 @@
 from dataclasses import dataclass
 from typing import Dict
 from cconn.server import Server
-from cconn.comm.base.bus.bus import Bus
-from cconn.comm.base.bus.server_struct import ServerStruct
+from cconn.comm.bus.bus import Bus
+from cconn.comm.bus.server_struct import ServerStruct
 from cconn.comm.base.msg import Msg
 from cconn.connection_factory import (
     ConnectionFactory,

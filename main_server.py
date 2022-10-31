@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from cconn.comm.base.bus.cross_network_bus import CrossNetworkBus
+from cconn.comm.bus.cross_network_bus import CrossNetworkBus
 from cconn.connection_factory import ConnectionType
 from cconn.definitions.prop_keys import PropKeys
 
