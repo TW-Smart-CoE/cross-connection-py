@@ -12,7 +12,7 @@ class AddressUtils:
     @staticmethod
     def host_address() -> str:
         try:
-            socket.gethostbyname(AddressUtils.hostname())
+            return socket.gethostbyname(AddressUtils.hostname())
         except Exception:
             return ''
 
