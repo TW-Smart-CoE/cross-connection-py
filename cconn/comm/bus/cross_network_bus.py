@@ -2,6 +2,8 @@
 
 from dataclasses import dataclass
 from typing import Dict
+from cconn.log.logger import Logger, DefaultLogger
+from cconn.module import Module
 from cconn.server import Server
 from cconn.comm.bus.bus import Bus
 from cconn.comm.bus.server_struct import ServerStruct
@@ -21,7 +23,7 @@ class MsgObjPublish:
     exclude_server: Server = None
 
 
-class CrossNetworkBus(Bus):
+class CrossNetworkBus(Bus, Module):
     class ServerCallback(Server.Callback):
         def __init__(self, server: Server, bus: Bus):
             self.__server: Server = server
@@ -40,7 +42,11 @@ class CrossNetworkBus(Bus):
         self.__initialized = False
         self.__server_dict: Dict[ConnectionType, ServerStruct] = dict()
         self.__msg_thread = None
+        self.__logger = DefaultLogger()
         self.__initialize()
+
+    def set_logger(self, logger: Logger):
+        self.__logger = logger
 
     def __msg_handler(self, msg_obj: any):
         if isinstance(msg_obj, MsgObjPublish):
@@ -76,7 +82,9 @@ class CrossNetworkBus(Bus):
 
         server_struct = self.__server_dict[connection_type]
         is_started = server_struct.server.start(server_config)
-        if not is_started:
+        if is_started:
+            self.__logger.info(f'{connection_type.name} server started')
+        else:
             return False
 
         server_struct.register.register(network_register_config)
@@ -88,6 +96,8 @@ class CrossNetworkBus(Bus):
         for it in self.__server_dict.values():
             it.register.unregister()
             it.server.stop()
+
+        self.__logger.info(f'CrossNetworkBus stopped')
 
     def __create_server_callback(self, server: Server) -> ServerCallback:
         return CrossNetworkBus.ServerCallback(server, self)

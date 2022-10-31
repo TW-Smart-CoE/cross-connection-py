@@ -1,8 +1,6 @@
 # coding: utf-8
 
 from concurrent.futures import ThreadPoolExecutor
-from functools import partial, partialmethod
-from http import client
 from socket import AF_INET, SOCK_STREAM, socket
 from typing import Dict
 from cconn.comm.base.comm_handler import CommHandler
@@ -42,7 +40,6 @@ class TcpServer(Server):
             self.stop()
 
         self.__server_sock = socket(AF_INET, SOCK_STREAM)
-        print(f'bind {self.__port}')
         self.__server_sock.bind(('', self.__port))
         self.__server_sock.listen()
 
