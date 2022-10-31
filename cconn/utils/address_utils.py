@@ -11,7 +11,10 @@ class AddressUtils:
 
     @staticmethod
     def host_address() -> str:
-        return socket.gethostbyname(AddressUtils.hostname())
+        try:
+            socket.gethostbyname(AddressUtils.hostname())
+        except Exception:
+            return ''
 
     @staticmethod
     def ipv4_str_to_int(ipv4: str) -> int:
