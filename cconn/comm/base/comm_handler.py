@@ -103,7 +103,6 @@ class CommHandler:
             self.__on_msg_arrived_listener = None
             self.__on_comm_close_listener = None
 
-        print('close')
         self.__is_close = True
 
         try:
