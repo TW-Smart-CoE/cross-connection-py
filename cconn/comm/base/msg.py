@@ -49,7 +49,7 @@ class MsgHeader:
             raise Exception('buffer size {0} smaller than MSG_HEADER_LEN {1}'
                             .format(len(buffer), MSG_HEADER_LEN))
 
-        result = struct.unpack('>IBBHHHI', buffer)
+        result = struct.unpack('>IBBHHIH', buffer)
         self.flag = result[0]
         self.type = MsgType(result[1])
         self.method = Method(result[2])
@@ -63,7 +63,7 @@ class MsgHeader:
             dst_byte_array = bytearray(MSG_HEADER_LEN)
 
         struct.pack_into(
-            '>IBBHHHI',
+            '>IBBHHIH',
             dst_byte_array,
             0,
             self.flag,
@@ -132,7 +132,7 @@ class Msg:
         return Msg(
             header=self.header.copy(),
             topic=self.topic,
-            data=self.data
+            data=self.data,
         )
 
 

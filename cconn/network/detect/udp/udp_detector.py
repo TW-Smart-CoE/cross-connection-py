@@ -71,7 +71,7 @@ class UdpDetector(NetworkDetector):
                     props = dict()
                     props[PropKeys.PROP_UDP_DETECTOR_ON_FOUND_SERVICE_IP] \
                         = str(ipaddress.IPv4Address(broadcastMsg.ip))
-                    props[PropKeys.PROP_UDP_DETECTOR_BROADCAST_PORT] \
+                    props[PropKeys.PROP_UDP_DETECTOR_ON_FOUND_SERVICE_PORT] \
                         = broadcastMsg.port
 
                     on_found_service(props)

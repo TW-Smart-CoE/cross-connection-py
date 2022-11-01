@@ -87,6 +87,8 @@ class CommHandler:
             else:
                 if calc_checksum(msg) == msg.header.check_sum:
                     self.__on_msg_arrived(msg)
+                else:
+                    self.__logger.warn('checksum failed!')
 
                 # clear completeness state
                 self.__msg_completeness = MsgCompleteness.NONE
@@ -210,11 +212,11 @@ class CommHandler:
                 self.__buffer_left_size()
             )
         except Exception as e:
-            self.__logger.warn('recv exception: {0}'.format(str(e)))
+            self.__logger.warn(f'recv exception: {str(e)}')
             return None
 
         if length <= 0:
-            self.__logger.warn('recv len == {0}'.format(length))
+            self.__logger.warn(f'recv len == {length}')
             return None
 
         self.__buffer_data_len += length
