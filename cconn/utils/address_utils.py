@@ -12,8 +12,13 @@ class AddressUtils:
     @staticmethod
     def host_address() -> str:
         try:
-            return socket.gethostbyname(AddressUtils.hostname())
-        except Exception:
+            hostname = AddressUtils.hostname()
+            if hostname == 'raspberrypi':
+                hostname = f'{hostname}.local'
+
+            return socket.gethostbyname(hostname)
+        except Exception as e:
+            print(e)
             return ''
 
     @staticmethod
