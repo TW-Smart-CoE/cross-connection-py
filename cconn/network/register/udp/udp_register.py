@@ -86,10 +86,11 @@ class UdpRegister(NetworkRegister):
             DEFAULT_BROADCAST_FLAG,
         )
 
+        host_address = AddressUtils.host_address()
         self.__server_ip = PropsUtils.get_prop_str(
             config_props,
             PropKeys.PROP_UDP_REGISTER_SERVER_IP,
-            AddressUtils.host_address(),
+            host_address
         )
 
         self.__server_port = PropsUtils.get_prop_int(

@@ -105,6 +105,8 @@ class TcpServer(Server):
 
     def stop(self):
         try:
+            self.__server_pub_sub_manager.clear_all_comm_wrappers()
+
             if self.__server_sock is not None:
                 self.__server_sock.close()
         except Exception as e:

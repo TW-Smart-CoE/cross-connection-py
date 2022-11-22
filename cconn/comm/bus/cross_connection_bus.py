@@ -23,7 +23,7 @@ class MsgObjPublish:
     exclude_server: Server = None
 
 
-class CrossNetworkBus(Bus, Module):
+class CrossConnectionBus(Bus, Module):
     class ServerCallback(Server.Callback):
         def __init__(self, server: Server, bus: Bus):
             self.__server: Server = server
@@ -97,10 +97,10 @@ class CrossNetworkBus(Bus, Module):
             it.register.unregister()
             it.server.stop()
 
-        self.__logger.info(f'CrossNetworkBus stopped')
+        self.__logger.info(f'CrossConnectionBus stopped')
 
     def __create_server_callback(self, server: Server) -> ServerCallback:
-        return CrossNetworkBus.ServerCallback(server, self)
+        return CrossConnectionBus.ServerCallback(server, self)
 
     def publish_msg_to_bus(self, msg: Msg, exclude_server: Server):
         self.__msg_thread.enqueue(MsgObjPublish(
