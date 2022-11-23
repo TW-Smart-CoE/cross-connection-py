@@ -60,19 +60,18 @@ class UdpDetector(NetworkDetector):
 
         while self.__is_keep_receiving and self.__receiver_sock is not None:
             self.__logger.debug(
-                'Waiting for broadcast on port {0}'
-                .format(self.__broadcast_port))
+                f'Waiting for broadcast on port {self.__broadcast_port}')
 
             data = self.__receiver_sock.recvfrom(UdpDetector.RECV_BUF_LEN)
             if len(data[0]) == BROADCAST_MSG_HEADER_LEN:
-                broadcastMsg = BroadcastMsg()
-                broadcastMsg.from_bytes(data[0])
-                if broadcastMsg.flag == self.__flag:
+                broadcast_msg = BroadcastMsg()
+                broadcast_msg.from_bytes(data[0])
+                if broadcast_msg.flag == self.__flag:
                     props = dict()
                     props[PropKeys.PROP_UDP_DETECTOR_ON_FOUND_SERVICE_IP] \
-                        = str(ipaddress.IPv4Address(broadcastMsg.ip))
+                        = str(ipaddress.IPv4Address(broadcast_msg.ip))
                     props[PropKeys.PROP_UDP_DETECTOR_ON_FOUND_SERVICE_PORT] \
-                        = broadcastMsg.port
+                        = broadcast_msg.port
 
                     on_found_service(props)
 
