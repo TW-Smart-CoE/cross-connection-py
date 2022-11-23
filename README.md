@@ -28,9 +28,9 @@ pip install -U cross-connection
 
 ### Sample
 
-Server
+Sample server
 
-```
+```python
 # coding: utf-8
 
 from cconn.comm.bus.cross_connection_bus import CrossConnectionBus
@@ -46,6 +46,7 @@ if __name__ == '__main__':
             PropKeys.PROP_PORT: 11001,
         },
         network_register_config={
+            PropKeys.PROP_UDP_REGISTER_FLAG: 0xfffe1234,
             PropKeys.PROP_UDP_REGISTER_SERVER_PORT: 11001,
             PropKeys.PROP_UDP_REGISTER_BROADCAST_PORT: 12000,
             PropKeys.PROP_UDP_REGISTER_BROADCAST_INTERVAL: 3000,
@@ -55,13 +56,14 @@ if __name__ == '__main__':
     input()
 
     bus.stop_all()
+
 ```
 
-Client
-```
+Sample client
+```python
 # coding: utf-8
 
-from typing import Dict
+from typing import Dict, Final
 from cconn.connection import ConnectionState
 from cconn.connection_factory import ConnectionFactory, ConnectionType, NetworkDiscoveryType
 from cconn.definitions.prop_keys import PropKeys
@@ -70,7 +72,8 @@ from cconn.utils.props import PropsUtils
 from cconn.comm.base.msg import Method
 
 
-TEST_TOPIC = '/execute_cmd_list'
+TEST_TOPIC: Final = '/execute_cmd_list'
+DETECT_FLAG: Final = 0xfffe1234
 
 detector = ConnectionFactory.create_detector(NetworkDiscoveryType.UDP)
 connection = ConnectionFactory.create_connection(ConnectionType.TCP)
@@ -89,25 +92,27 @@ connection.add_on_connection_state_changed_listener(on_conn_state_changed)
 
 def on_found_service(config_props: Dict[str, str]):
    detector.stop_discover()
+   print(config_props)
 
    ip = PropsUtils.get_prop_str(config_props, PropKeys.PROP_UDP_DETECTOR_ON_FOUND_SERVICE_IP, '')
    port = PropsUtils.get_prop_int(config_props, PropKeys.PROP_UDP_DETECTOR_ON_FOUND_SERVICE_PORT, 0)
 
    print(f'found {ip} {port}')
-
    if ip != '' and port != 0:
       props = dict()
       props[PropKeys.PROP_IP] = ip
       props[PropKeys.PROP_PORT] = port
-      props[PropKeys.PROP_AUTO_CONNECT] = str(True)
-      props[PropKeys.PROP_MAX_RECONNECT_RETRY_TIME] = str(8)
+      props[PropKeys.PROP_AUTO_CONNECT] = True
+      props[PropKeys.PROP_MAX_RECONNECT_RETRY_TIME] = 8
 
       connection.init(props)
 
 
 if __name__ == '__main__':
    detector.start_discover(
-      config_props=dict(),
+      config_props={
+         PropKeys.PROP_UDP_DETECTOR_FLAG: DETECT_FLAG,
+      },
       on_found_service=on_found_service
    )
 
