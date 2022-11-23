@@ -8,6 +8,7 @@ from cconn.utils.message_converter import MessageConverter
 from cconn.utils.props import PropsUtils
 from cconn.comm.base.msg import Method
 
+
 TEST_TOPIC = '/execute_cmd_list'
 
 detector = ConnectionFactory.create_detector(NetworkDiscoveryType.UDP)
@@ -56,3 +57,4 @@ if __name__ == '__main__':
          connection.publish(TEST_TOPIC, Method.REQUEST, MessageConverter.str_to_bytes('data {0}'.format(count)))
 
       count += 1
+
