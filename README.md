@@ -102,10 +102,10 @@ def on_found_service(config_props: Dict[str, str]):
       props = dict()
       props[PropKeys.PROP_IP] = ip
       props[PropKeys.PROP_PORT] = port
-      props[PropKeys.PROP_AUTO_CONNECT] = True
+      props[PropKeys.PROP_AUTO_RECONNECT] = True
       props[PropKeys.PROP_MAX_RECONNECT_RETRY_TIME] = 8
 
-      connection.init(props)
+      connection.start(props)
 
 
 if __name__ == '__main__':

@@ -65,7 +65,7 @@ class TcpClient(Connection):
             listener: Callable[[ConnectionState, Exception], None]):
         self.__on_connection_state_changed_listener_list.remove(listener)
 
-    def init(self, config_props: Dict[str, str]):
+    def start(self, config_props: Dict[str, str]):
         self.__address = PropsUtils.get_prop_str(
             config_props,
             PropKeys.PROP_IP,
@@ -78,7 +78,7 @@ class TcpClient(Connection):
         )
         self.__auto_reconnect = PropsUtils.get_prop_bool(
             config_props,
-            PropKeys.PROP_AUTO_CONNECT,
+            PropKeys.PROP_AUTO_RECONNECT,
             False
         )
         self.__min_reconnect_retry_time = PropsUtils.get_prop_int(

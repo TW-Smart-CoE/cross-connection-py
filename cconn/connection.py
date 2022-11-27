@@ -37,7 +37,7 @@ class Connection(Module):
         raise NotImplementedError
 
     @abstractmethod
-    def init(self, config_props: Dict[str, str]):
+    def start(self, config_props: Dict[str, str]):
         raise NotImplementedError
 
     @abstractmethod
