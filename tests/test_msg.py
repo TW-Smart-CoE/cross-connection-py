@@ -4,7 +4,7 @@ from unittest import TestCase
 from cconn.comm.base.msg import Method, MsgType, MsgHeader, Msg, calc_checksum
 from cconn.comm.base.msg import MsgHeader
 from cconn.comm.base.msg import MsgType
-from cconn.utils.message_converter import MessageConverter
+from cconn.utils.data_converter import DataConverter
 
 
 class TestMsg(TestCase):
@@ -32,8 +32,8 @@ class TestMsg(TestCase):
         msg.header.type = MsgType.UNSUBSCRIBE
         msg.header.method = Method.QUERY
         msg.header.check_sum = 0
-        msg.topic = MessageConverter.str_to_bytes('/aaaa')
-        msg.data = MessageConverter.str_to_bytes('00000000')
+        msg.topic = DataConverter.str_to_bytes('/aaaa')
+        msg.data = DataConverter.str_to_bytes('00000000')
 
         msg.prepare()
 
@@ -72,6 +72,6 @@ class TestMsg(TestCase):
                 type=MsgType.SUBSCRIBE,
                 method=Method.REQUEST,
             ),
-            topic=MessageConverter.str_to_bytes('test'),
+            topic=DataConverter.str_to_bytes('test'),
         )
         msg.prepare()

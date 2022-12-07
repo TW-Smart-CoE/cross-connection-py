@@ -4,7 +4,7 @@ from typing import Dict, Final
 from cconn.connection import ConnectionState
 from cconn.connection_factory import ConnectionFactory, ConnectionType, NetworkDiscoveryType
 from cconn.definitions.prop_keys import PropKeys
-from cconn.utils.message_converter import MessageConverter
+from cconn.utils.data_converter import DataConverter
 from cconn.utils.props import PropsUtils
 from cconn.comm.base.msg import Method
 
@@ -18,12 +18,14 @@ connection = ConnectionFactory.create_connection(ConnectionType.TCP)
 def on_data_arrived(topic: str, method: Method, data: bytes):
    print(topic)
    print(method)
-   print(MessageConverter.bytes_to_str(data))
+   print(DataConverter.bytes_to_str(data))
 
 def on_conn_state_changed(conn_state: ConnectionState, e: Exception):
    print(conn_state)
    if conn_state == ConnectionState.CONNECTED:
       connection.subscribe(TEST_TOPIC, Method.REQUEST, on_data_arrived)
+      connection.subscribe('/chat/response', Method.REPORT, on_data_arrived)
+      connection.subscribe('/auto_play', Method.REQUEST, on_data_arrived)
 
 connection.add_on_connection_state_changed_listener(on_conn_state_changed)
 
@@ -52,11 +54,11 @@ if __name__ == '__main__':
       },
       on_found_service=on_found_service
    )
-
+    
    count = 1
    while True:
       input()
       if connection.get_state() == ConnectionState.CONNECTED:
-         connection.publish(TEST_TOPIC, Method.REQUEST, MessageConverter.str_to_bytes('data {0}'.format(count)))
+         connection.publish(TEST_TOPIC, Method.REQUEST, DataConverter.str_to_bytes('data {0}'.format(count)))
 
       count += 1

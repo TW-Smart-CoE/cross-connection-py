@@ -6,7 +6,7 @@ from cconn.comm.base.comm import Comm
 from cconn.comm.base.comm_handler import CommHandler
 from cconn.comm.base.msg import Msg, MsgType, Method
 from cconn.log.logger import DefaultLogger
-from cconn.utils.message_converter import MessageConverter
+from cconn.utils.data_converter import DataConverter
      
 
 class TestCommHandler(TestCase):
@@ -27,8 +27,8 @@ class TestCommHandler(TestCase):
                     self.msg.header.type = MsgType.UNSUBSCRIBE
                     self.msg.header.method = Method.QUERY
                     self.msg.header.check_sum = 0
-                    self.msg.topic = MessageConverter.str_to_bytes('/aaaa')
-                    self.msg.data = MessageConverter.str_to_bytes('00000000')
+                    self.msg.topic = DataConverter.str_to_bytes('/aaaa')
+                    self.msg.data = DataConverter.str_to_bytes('00000000')
                     self.msg.prepare()
 
                     buf[offset:] = self.msg.to_bytes()
@@ -72,8 +72,8 @@ class TestCommHandler(TestCase):
                 self.msg.header.type = MsgType.UNSUBSCRIBE
                 self.msg.header.method = Method.QUERY
                 self.msg.header.check_sum = 0
-                self.msg.topic = MessageConverter.str_to_bytes('/aaaa')
-                self.msg.data = MessageConverter.str_to_bytes('00000000')
+                self.msg.topic = DataConverter.str_to_bytes('/aaaa')
+                self.msg.data = DataConverter.str_to_bytes('00000000')
                 self.msg.prepare()
                 
             def recv(self, buf: bytearray, offset: int, length: int) -> int:

@@ -4,7 +4,7 @@ from typing import List
 from cconn.comm.base.comm_server_wrapper import CommServerWrapper
 from cconn.comm.base.msg import Msg, MsgType
 from cconn.log.logger import Logger
-from cconn.utils.message_converter import MessageConverter
+from cconn.utils.data_converter import DataConverter
 from cconn.server import Server
 
 
@@ -49,7 +49,7 @@ class ServerCommPubSubManager:
         self.__comm_server_wrapper_list.clear()
 
     def __handle_publish_msg_self(self, msg: Msg):
-        full_topic = MessageConverter.bytes_to_str(msg.topic)
+        full_topic = DataConverter.bytes_to_str(msg.topic)
 
         for it in self.__comm_server_wrapper_list:
             if it.is_subscribed(full_topic):
@@ -67,7 +67,7 @@ class ServerCommPubSubManager:
         comm_server_wrapper: CommServerWrapper,
         msg: Msg
     ):
-        full_topic = MessageConverter.bytes_to_str(msg.topic)
+        full_topic = DataConverter.bytes_to_str(msg.topic)
 
         # subscribe topic self
         comm_server_wrapper.subscribe(full_topic)
@@ -81,7 +81,7 @@ class ServerCommPubSubManager:
         comm_server_wrapper: CommServerWrapper,
         msg: Msg
     ):
-        full_topic = MessageConverter.bytes_to_str(msg.topic)
+        full_topic = DataConverter.bytes_to_str(msg.topic)
 
         # unsubscribe topic self
         comm_server_wrapper.unsubscribe(full_topic)

@@ -20,7 +20,7 @@ from cconn.connection import (
 )
 from cconn.definitions.prop_keys import PropKeys
 from cconn.log.logger import Logger, DefaultLogger
-from cconn.utils.message_converter import MessageConverter
+from cconn.utils.data_converter import DataConverter
 from cconn.utils.props import PropsUtils
 
 
@@ -148,7 +148,7 @@ class TcpClient(Connection):
             pass
 
         self.__subscribe_manager.invoke_matched_callback(
-            MessageConverter.bytes_to_str(msg.topic),
+            DataConverter.bytes_to_str(msg.topic),
             msg.data,
         )
 
@@ -185,7 +185,7 @@ class TcpClient(Connection):
             data: bytes,
             on_action_listener: OnActionListener):
         full_topic = TopicMapper.to_full_topic(topic, method)
-        full_topic_bytes = MessageConverter.str_to_bytes(full_topic)
+        full_topic_bytes = DataConverter.str_to_bytes(full_topic)
         try:
             if self.__comm_handler is not None:
                 send_len = self.__comm_handler.send(
@@ -239,7 +239,7 @@ class TcpClient(Connection):
         on_action_listener: OnActionListener
     ):
         full_topic = TopicMapper.to_full_topic(topic, method)
-        full_topic_bytes = MessageConverter.str_to_bytes(full_topic)
+        full_topic_bytes = DataConverter.str_to_bytes(full_topic)
 
         try:
             if self.__comm_handler is not None:
@@ -297,7 +297,7 @@ class TcpClient(Connection):
 
     def __unsubscribe_task(self, topic: str, method: Method):
         full_topic = TopicMapper.to_full_topic(topic, method)
-        full_topic_bytes = MessageConverter.str_to_bytes(full_topic)
+        full_topic_bytes = DataConverter.str_to_bytes(full_topic)
 
         try:
             if self.__comm_handler is not None:

@@ -4,7 +4,7 @@ from email import header
 import struct
 from dataclasses import dataclass
 from enum import Enum
-from cconn.utils.message_converter import MessageConverter
+from cconn.utils.data_converter import DataConverter
 
 
 MSG_HEADER_LEN = 16
@@ -142,7 +142,7 @@ def create_msg(
     topic: str,
     data: bytes
 ) -> Msg:
-    topic_bytes = MessageConverter.str_to_bytes(topic)
+    topic_bytes = DataConverter.str_to_bytes(topic)
 
     header = MsgHeader()
     header.type = msg_type
