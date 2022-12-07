@@ -11,6 +11,7 @@ if __name__ == '__main__':
         connection_type=ConnectionType.TCP,
         server_config={
             PropKeys.PROP_PORT: 11001,
+            PropKeys.PROP_RECV_BUFFER_SIZE: 8192,
         },
         network_register_config={
             PropKeys.PROP_UDP_REGISTER_FLAG: 0xfffe1234,

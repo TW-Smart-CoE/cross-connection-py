@@ -18,6 +18,7 @@ from cconn.connection import (
     Method,
     OnActionListener,
 )
+from cconn.definitions.constants import Constants
 from cconn.definitions.prop_keys import PropKeys
 from cconn.log.logger import Logger, DefaultLogger
 from cconn.utils.data_converter import DataConverter
@@ -49,6 +50,7 @@ class TcpClient(Connection):
         self.__current_reconnect_retry_time = \
             self.__min_reconnect_retry_time
         self.__executor = ThreadPoolExecutor(max_workers=5)
+        self.__recv_buffer_size = Constants.DEFAULT_RECV_BUFFER_SIZE
 
     def set_logger(self, logger: Logger):
         self.__logger = logger
@@ -94,6 +96,11 @@ class TcpClient(Connection):
         self.__current_reconnect_retry_time = min(
             self.__max_reconnect_retry_time,
             self.__min_reconnect_retry_time
+        )
+        self.__recv_buffer_size = PropsUtils.get_prop_int(
+            config_props,
+            PropKeys.PROP_RECV_BUFFER_SIZE,
+            Constants.DEFAULT_RECV_BUFFER_SIZE
         )
 
         self.__tcp_connect()
@@ -167,6 +174,7 @@ class TcpClient(Connection):
             on_comm_close_listener=self.__on_comm_close,
             on_msg_arrived_listener=self.__on_msg_arrived,
             on_conn_state_changed_listener=self.__change_connection_state,
+            recv_buffer_size=self.__recv_buffer_size,
         )
 
         self.__executor.submit(self.__comm_handler.run)

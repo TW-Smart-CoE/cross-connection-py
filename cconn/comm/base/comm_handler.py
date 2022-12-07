@@ -10,6 +10,7 @@ from cconn.comm.base.msg import (MSG_FLAG,
                                  MsgHeader,
                                  calc_checksum)
 from cconn.connection import ConnectionState
+from cconn.definitions.constants import Constants
 from cconn.log.logger import Logger
 
 
@@ -20,7 +21,6 @@ class MsgCompleteness(Enum):
 
 
 class CommHandler:
-    BUFFER_SIZE = 4096
     INT_SIZE_BYTE = 4
 
     def __init__(
@@ -32,6 +32,7 @@ class CommHandler:
         on_msg_arrived_listener: Callable[[any, Msg], None] = None,
         on_conn_state_changed_listener:
             Callable[[ConnectionState, Exception], None] = None,
+        recv_buffer_size=Constants.DEFAULT_RECV_BUFFER_SIZE,
     ):
         self.__is_close: bool = False
         self.__msg_completeness: MsgCompleteness = MsgCompleteness.NONE
@@ -46,9 +47,10 @@ class CommHandler:
             on_msg_arrived_listener
         self.__on_connection_state_changed_listener = \
             on_conn_state_changed_listener
-        self.__buffer: bytearray = bytearray(CommHandler.BUFFER_SIZE)
+        self.__buffer: bytearray = bytearray(recv_buffer_size)
         self.__buffer_data_start_offset = 0
         self.__buffer_data_len = 0
+        self.__recv_buffer_size = recv_buffer_size
 
     def __on_connection_state_changed(
             self,
@@ -118,7 +120,7 @@ class CommHandler:
             self.__on_comm_close(is_passive)
 
     def __buffer_left_size(self) -> int:
-        return CommHandler.BUFFER_SIZE - \
+        return self.__recv_buffer_size - \
             (self.__buffer_data_start_offset + self.__buffer_data_len)
 
     def __read_msg_flag_from_buffer(self) -> Msg:
@@ -126,7 +128,7 @@ class CommHandler:
         for i in range(self.__buffer_data_start_offset,
                        self.__buffer_data_start_offset +
                        self.__buffer_data_len -
-                       CommHandler.INT_SIZE_BYTE
+                       self.INT_SIZE_BYTE
                        ):
             flag = struct.unpack_from(
                 '>I',
@@ -217,6 +219,11 @@ class CommHandler:
 
         if length <= 0:
             self.__logger.warn(f'recv len == {length}')
+            if length == 0:
+                self.__logger.warn(
+                    f'msg length already meets max size of buffer: \
+                    {self.__buffer_data_len}')
+
             return None
 
         self.__buffer_data_len += length

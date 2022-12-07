@@ -20,3 +20,5 @@ class PropKeys:
     PROP_UDP_REGISTER_FLAG: Final = 'flag'
     PROP_UDP_REGISTER_SERVER_IP: Final = 'server_ip'
     PROP_UDP_REGISTER_SERVER_PORT: Final = 'server_port'
+
+    PROP_RECV_BUFFER_SIZE: Final = 'recv_buffer_size'

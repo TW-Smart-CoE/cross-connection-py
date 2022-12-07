@@ -38,13 +38,13 @@ def on_found_service(config_props: Dict[str, str]):
 
    print(f'found {ip} {port}')
    if ip != '' and port != 0:
-      props = dict()
-      props[PropKeys.PROP_IP] = ip
-      props[PropKeys.PROP_PORT] = port
-      props[PropKeys.PROP_AUTO_RECONNECT] = True
-      props[PropKeys.PROP_MAX_RECONNECT_RETRY_TIME] = 8
-
-      connection.start(props)
+      connection.start({
+         PropKeys.PROP_IP: ip,
+         PropKeys.PROP_PORT: port,
+         PropKeys.PROP_AUTO_RECONNECT: True,
+         PropKeys.PROP_MAX_RECONNECT_RETRY_TIME: 8,
+         PropKeys.PROP_RECV_BUFFER_SIZE: 8192,
+      })
 
 
 if __name__ == '__main__':

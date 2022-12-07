@@ -9,6 +9,7 @@ from cconn.comm.base.msg import Msg
 from cconn.comm.base.pubsub.server_comm_pubsub_manager import \
     ServerCommPubSubManager
 from cconn.comm.tcp.tcp_comm import TcpComm
+from cconn.definitions.constants import Constants
 from cconn.definitions.prop_keys import PropKeys
 from cconn.log.logger import DefaultLogger, Logger
 from cconn.server import Server
@@ -24,6 +25,7 @@ class TcpServer(Server):
         self.__logger: Logger = DefaultLogger()
         self.__server_pub_sub_manager = ServerCommPubSubManager(self.__logger)
         self.__executor = ThreadPoolExecutor(max_workers=5)
+        self.__recv_buffer_size = Constants.DEFAULT_RECV_BUFFER_SIZE
 
     def set_logger(self, logger: Logger):
         self.__logger = logger
@@ -36,7 +38,13 @@ class TcpServer(Server):
             TcpServer.PROPERTY_PORT_DEFAULT
         )
 
-        if self.__server_sock is not None and self.__server_sock._:
+        self.__recv_buffer_size = PropsUtils.get_prop_int(
+            config_props,
+            PropKeys.PROP_RECV_BUFFER_SIZE,
+            Constants.DEFAULT_RECV_BUFFER_SIZE
+        )
+
+        if self.__server_sock is not None:
             self.stop()
 
         self.__server_sock = socket(AF_INET, SOCK_STREAM)
@@ -87,6 +95,7 @@ class TcpServer(Server):
                         logger=self.__logger,
                         on_comm_close_listener=self.__on_comm_close,
                         on_msg_arrived_listener=self.__on_msg_arrived,
+                        recv_buffer_size=self.__recv_buffer_size,
                     )
                 server_wrapper = CommServerWrapper(
                    comm_handler=comm_handler
