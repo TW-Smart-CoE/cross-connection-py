@@ -33,8 +33,8 @@ def on_found_service(config_props: Dict[str, str]):
    detector.stop_discover()
    print(config_props)
 
-   ip = PropsUtils.get_prop_str(config_props, PropKeys.PROP_UDP_DETECTOR_ON_FOUND_SERVICE_IP, '')
-   port = PropsUtils.get_prop_int(config_props, PropKeys.PROP_UDP_DETECTOR_ON_FOUND_SERVICE_PORT, 0)
+   ip = PropsUtils.get_prop_str(config_props, PropKeys.PROP_SERVER_IP, '')
+   port = PropsUtils.get_prop_int(config_props, PropKeys.PROP_SERVER_PORT, 0)
 
    print(f'found {ip} {port}')
    if ip != '' and port != 0:
@@ -50,7 +50,7 @@ def on_found_service(config_props: Dict[str, str]):
 if __name__ == '__main__':
    detector.start_discover(
       config_props={
-         PropKeys.PROP_UDP_DETECTOR_FLAG: DETECT_FLAG,
+         PropKeys.PROP_BROADCAST_INTERVAL: DETECT_FLAG,
       },
       on_found_service=on_found_service
    )

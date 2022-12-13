@@ -72,30 +72,30 @@ class UdpRegister(NetworkRegister):
     ):
         self.__broadcast_port = PropsUtils.get_prop_int(
             config_props,
-            PropKeys.PROP_UDP_DETECTOR_BROADCAST_PORT,
+            PropKeys.PROP_BROADCAST_PORT,
             UdpRegister.DEFAULT_BROADCAST_PORT,
         )
         self.__broadcast_interval = PropsUtils.get_prop_int(
             config_props,
-            PropKeys.PROP_UDP_REGISTER_BROADCAST_INTERVAL,
+            PropKeys.PROP_BROADCAST_INTERVAL,
             UdpRegister.DEFAULT_BROADCAST_INTERVAL,
         )
         self.__flag = PropsUtils.get_prop_int(
             config_props,
-            PropKeys.PROP_UDP_REGISTER_FLAG,
+            PropKeys.PROP_FLAG,
             DEFAULT_BROADCAST_FLAG,
         )
 
         host_address = AddressUtils.host_address()
         self.__server_ip = PropsUtils.get_prop_str(
             config_props,
-            PropKeys.PROP_UDP_REGISTER_SERVER_IP,
+            PropKeys.PROP_SERVER_IP,
             host_address
         )
 
         self.__server_port = PropsUtils.get_prop_int(
             config_props,
-            PropKeys.PROP_UDP_REGISTER_SERVER_PORT,
+            PropKeys.PROP_SERVER_PORT,
             0
         )
 

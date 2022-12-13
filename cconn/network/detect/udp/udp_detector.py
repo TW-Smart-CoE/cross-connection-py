@@ -43,13 +43,13 @@ class UdpDetector(NetworkDetector):
     ):
         self.__broadcast_port = PropsUtils.get_prop_int(
             config_props,
-            PropKeys.PROP_UDP_DETECTOR_BROADCAST_PORT,
+            PropKeys.PROP_BROADCAST_PORT,
             UdpDetector.DEFAULT_BROADCAST_PORT,
         )
 
         self.__flag = PropsUtils.get_prop_int(
             config_props,
-            PropKeys.PROP_UDP_DETECTOR_FLAG,
+            PropKeys.PROP_BROADCAST_INTERVAL,
             DEFAULT_BROADCAST_FLAG,
         )
 
@@ -68,9 +68,9 @@ class UdpDetector(NetworkDetector):
                 broadcast_msg.from_bytes(data[0])
                 if broadcast_msg.flag == self.__flag:
                     props = dict()
-                    props[PropKeys.PROP_UDP_DETECTOR_ON_FOUND_SERVICE_IP] \
+                    props[PropKeys.PROP_SERVER_IP] \
                         = str(ipaddress.IPv4Address(broadcast_msg.ip))
-                    props[PropKeys.PROP_UDP_DETECTOR_ON_FOUND_SERVICE_PORT] \
+                    props[PropKeys.PROP_SERVER_PORT] \
                         = broadcast_msg.port
 
                     on_found_service(props)
