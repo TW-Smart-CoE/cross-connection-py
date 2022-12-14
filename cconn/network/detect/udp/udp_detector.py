@@ -49,7 +49,7 @@ class UdpDetector(NetworkDetector):
 
         self.__flag = PropsUtils.get_prop_int(
             config_props,
-            PropKeys.PROP_BROADCAST_INTERVAL,
+            PropKeys.PROP_FLAG,
             DEFAULT_BROADCAST_FLAG,
         )
 

@@ -50,11 +50,11 @@ def on_found_service(config_props: Dict[str, str]):
 if __name__ == '__main__':
    detector.start_discover(
       config_props={
-         PropKeys.PROP_BROADCAST_INTERVAL: DETECT_FLAG,
+         PropKeys.PROP_FLAG: DETECT_FLAG,
       },
       on_found_service=on_found_service
    )
-    
+
    count = 1
    while True:
       input()
@@ -62,3 +62,4 @@ if __name__ == '__main__':
          connection.publish(TEST_TOPIC, Method.REQUEST, DataConverter.str_to_bytes('data {0}'.format(count)))
 
       count += 1
+
