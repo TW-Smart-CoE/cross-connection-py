@@ -219,10 +219,11 @@ class CommHandler:
 
         if length <= 0:
             self.__logger.warn(f'recv len == {length}')
-            if length == 0:
+            if length == 0 and \
+                    self.__buffer_data_len == self.__recv_buffer_size:
                 self.__logger.warn(
-                    f'msg length already meets max size of buffer: \
-                    {self.__buffer_data_len}')
+                    f'msg length already meets max size of buffer: '
+                    + f'{self.__buffer_data_len}')
 
             return None
 

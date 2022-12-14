@@ -59,7 +59,8 @@ if __name__ == '__main__':
    while True:
       input()
       if connection.get_state() == ConnectionState.CONNECTED:
-         connection.publish(TEST_TOPIC, Method.REQUEST, DataConverter.str_to_bytes('data {0}'.format(count)))
+          connection.publish(TEST_TOPIC, Method.REQUEST,
+                             DataConverter.str_to_bytes('data {0}'.format(count)))
 
       count += 1
 
