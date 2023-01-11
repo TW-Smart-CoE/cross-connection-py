@@ -36,9 +36,6 @@ class MsgThread(Thread):
     def __msg_arrived(self, msg: any):
         self.__on_msg_arrived(msg)
 
-    def __reset_key(self):
-        self.__key = False
-
     def __wait_for_key(self):
         if not self.__key:
             self.__lock.acquire()
