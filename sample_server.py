@@ -1,12 +1,17 @@
 # coding: utf-8
 
-from cconn.comm.bus.cross_connection_bus import CrossConnectionBus
+import sys
+from cconn.bus.cross_connection_bus import CrossConnectionBus
 from cconn.connection_factory import ConnectionType
 from cconn.definitions.prop_keys import PropKeys
 
 
 if __name__ == '__main__':
     bus = CrossConnectionBus()
+    if not bus.initialize():
+        print('Initialize failed')
+        sys.exit(-1)
+
     bus.start(
         connection_type=ConnectionType.TCP,
         server_config={

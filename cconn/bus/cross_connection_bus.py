@@ -5,8 +5,8 @@ from typing import Dict
 from cconn.log.logger import Logger, DefaultLogger
 from cconn.module import Module
 from cconn.server import Server
-from cconn.comm.bus.bus import Bus
-from cconn.comm.bus.server_struct import ServerStruct
+from cconn.bus.bus import Bus
+from cconn.bus.server_struct import ServerStruct
 from cconn.comm.base.msg import Msg
 from cconn.connection_factory import (
     ConnectionFactory,
@@ -23,7 +23,7 @@ class MsgObjPublish:
     exclude_server: Server = None
 
 
-class CrossConnectionBus(Bus, Module):
+class CrossConnectionBus(Bus):
     class ServerCallback(Server.Callback):
         def __init__(self, server: Server, bus: Bus):
             self.__server: Server = server
@@ -43,7 +43,6 @@ class CrossConnectionBus(Bus, Module):
         self.__server_dict: Dict[ConnectionType, ServerStruct] = dict()
         self.__msg_thread = None
         self.__logger = DefaultLogger()
-        self.__initialize()
 
     def set_logger(self, logger: Logger):
         self.__logger = logger
@@ -54,7 +53,7 @@ class CrossConnectionBus(Bus, Module):
                 if server_struct.server != msg_obj.exclude_server:
                     server_struct.server.handle_publish_message(msg_obj.msg)
 
-    def __initialize(self) -> bool:
+    def initialize(self) -> bool:
         if self.__initialized:
             return True
 
