@@ -35,7 +35,7 @@ class CrossConnectionBus(Bus):
             self.__bus.publish_msg_to_bus(msg, self.__server)
 
     def __init__(self):
-        self.__initialized = False
+        self.__is_initialized = False
         self.__server_dict: Dict[ConnectionType, ServerStruct] = dict()
         self.__msg_thread = None
         self.__logger = DefaultLogger()
@@ -50,27 +50,35 @@ class CrossConnectionBus(Bus):
                     server_struct.server.handle_publish_message(msg_obj.msg)
 
     def initialize(self) -> bool:
-        if self.__initialized:
+        if self.__is_initialized:
             return True
 
         self.__create_message_processing_thread()
 
         tcp_server = TcpServer()
         tcp_server.set_callback(self.__create_server_callback(tcp_server))
+        tcp_server.set_logger(self.__logger)
+
+        udp_register = UdpRegister()
+        udp_register.set_logger(self.__logger)
+
         self.__server_dict[ConnectionType.TCP] = \
             ServerStruct(
                 server=tcp_server,
-                register=UdpRegister(),
+                register=udp_register,
         )
 
-        self.__initialized = True
-        return self.__initialized
+        self.__is_initialized = True
+        return self.__is_initialized
 
     def start(
             self,
             connection_type: ConnectionType,
             server_config: Dict[str, str],
             network_register_config: Dict[str, str]) -> bool:
+        if not self.__is_initialized:
+            return false
+
         if connection_type not in self.__server_dict:
             return False
 
