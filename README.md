@@ -1,6 +1,6 @@
 # connection-py
 
-cross-connection is used to provide a cross-protocol pub/sub-mode connection library among multiple devices in LAN.
+cross-connection is used to provide a cross-protocol pub/sub-mode connection library among multiple devices.
 
 ### Features
 
@@ -14,6 +14,10 @@ cross-connection is used to provide a cross-protocol pub/sub-mode connection lib
 [android](https://github.com/TW-Smart-CoE/cross-connection-android)
 
 [python](https://github.com/TW-Smart-CoE/cross-connection-py)
+
+[csharp](https://github.com/TW-Smart-CoE/cross-connection-csharp)
+
+[unity](https://github.com/TW-Smart-CoE/cross-connection-unity)
 
 
 ### Environment
