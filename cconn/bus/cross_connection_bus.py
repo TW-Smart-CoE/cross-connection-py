@@ -77,7 +77,7 @@ class CrossConnectionBus(Bus):
             server_config: Dict[str, str],
             network_register_config: Dict[str, str]) -> bool:
         if not self.__is_initialized:
-            return false
+            return False
 
         if connection_type not in self.__server_dict:
             return False
