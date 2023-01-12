@@ -2,8 +2,9 @@
 
 from typing import Dict, Final
 from cconn.connection import ConnectionState
-from cconn.connection_factory import ConnectionFactory, ConnectionType, NetworkDiscoveryType
+from cconn.connection_factory import ConnectionFactory
 from cconn.definitions.prop_keys import PropKeys
+from cconn.definitions.types import ConnectionType, NetworkDiscoveryType
 from cconn.utils.data_converter import DataConverter
 from cconn.utils.props import PropsUtils
 from cconn.comm.base.msg import Method

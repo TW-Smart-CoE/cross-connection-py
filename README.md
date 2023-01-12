@@ -28,19 +28,24 @@ pip install -U cross-connection
 
 ### Sample
 
-Sample server
+Sample Bus (Server)
 
 ```python
 
 # coding: utf-8
 
-from cconn.comm.bus.cross_connection_bus import CrossConnectionBus
-from cconn.connection_factory import ConnectionType
+import sys
+from cconn.connection_factory import ConnectionFactory
+from cconn.definitions.types import ConnectionType
 from cconn.definitions.prop_keys import PropKeys
 
 
 if __name__ == '__main__':
-    bus = CrossConnectionBus()
+    bus = ConnectionFactory.create_bus()
+    if not bus.initialize():
+        print('Initialize failed')
+        sys.exit(-1)
+
     bus.start(
         connection_type=ConnectionType.TCP,
         server_config={
@@ -68,8 +73,9 @@ Sample client
 
 from typing import Dict, Final
 from cconn.connection import ConnectionState
-from cconn.connection_factory import ConnectionFactory, ConnectionType, NetworkDiscoveryType
+from cconn.connection_factory import ConnectionFactory
 from cconn.definitions.prop_keys import PropKeys
+from cconn.definitions.types import ConnectionType, NetworkDiscoveryType
 from cconn.utils.data_converter import DataConverter
 from cconn.utils.props import PropsUtils
 from cconn.comm.base.msg import Method

@@ -1,13 +1,13 @@
 # coding: utf-8
 
 import sys
-from cconn.bus.cross_connection_bus import CrossConnectionBus
-from cconn.connection_factory import ConnectionType
+from cconn.connection_factory import ConnectionFactory
+from cconn.definitions.types import ConnectionType
 from cconn.definitions.prop_keys import PropKeys
 
 
 if __name__ == '__main__':
-    bus = CrossConnectionBus()
+    bus = ConnectionFactory.create_bus()
     if not bus.initialize():
         print('Initialize failed')
         sys.exit(-1)

@@ -2,7 +2,7 @@
 
 from abc import abstractmethod
 from cconn.comm.base.msg import Msg
-from cconn.connection_factory import ConnectionType
+from cconn.definitions.types import ConnectionType
 from cconn.module import Module
 from cconn.server import Server
 from typing import Dict

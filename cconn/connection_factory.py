@@ -1,21 +1,14 @@
 # coding: utf-8
 
-from enum import Enum
+from cconn.bus.bus import Bus
+from cconn.bus.cross_connection_bus import CrossConnectionBus
 from cconn.comm.tcp.client.tcp_client import TcpClient
 from cconn.connection import Connection
+from cconn.definitions.types import ConnectionType, NetworkDiscoveryType
 from cconn.network.detect.network_detector import NetworkDetector
 from cconn.network.detect.udp.udp_detector import UdpDetector
 from cconn.network.register.network_register import NetworkRegister
 from cconn.network.register.udp.udp_register import UdpRegister
-
-
-class ConnectionType(Enum):
-    TCP = 1
-
-
-class NetworkDiscoveryType(Enum):
-    UDP = 2
-
 
 class ConnectionFactory:
     def create_connection(connection_type: ConnectionType) -> Connection:
@@ -37,3 +30,6 @@ class ConnectionFactory:
             return UdpRegister()
         else:
             return None
+
+    def create_bus() -> Bus:
+        return CrossConnectionBus()

@@ -2,17 +2,13 @@
 
 from dataclasses import dataclass
 from typing import Dict
+from cconn.definitions.types import ConnectionType
 from cconn.log.logger import Logger, DefaultLogger
-from cconn.module import Module
 from cconn.server import Server
 from cconn.bus.bus import Bus
 from cconn.bus.server_struct import ServerStruct
 from cconn.comm.base.msg import Msg
-from cconn.connection_factory import (
-    ConnectionFactory,
-    ConnectionType,
-    NetworkDiscoveryType
-)
+from cconn.network.register.udp.udp_register import UdpRegister
 from cconn.comm.tcp.server.tcp_server import TcpServer
 from cconn.utils.msg_thread import MsgThread
 
@@ -64,8 +60,7 @@ class CrossConnectionBus(Bus):
         self.__server_dict[ConnectionType.TCP] = \
             ServerStruct(
                 server=tcp_server,
-                register=ConnectionFactory.create_register(
-                    NetworkDiscoveryType.UDP)
+                register=UdpRegister(),
         )
 
         self.__initialized = True
