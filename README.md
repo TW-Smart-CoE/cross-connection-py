@@ -1,4 +1,4 @@
-# connection-py
+# cross-connection-py
 
 cross-connection is used to provide a cross-protocol pub/sub-mode connection library among multiple devices.
 
