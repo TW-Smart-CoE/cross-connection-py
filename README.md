@@ -127,6 +127,7 @@ if __name__ == '__main__':
    detector.start_discover(
       config_props={
          PropKeys.PROP_FLAG: DETECT_FLAG,
+         PropKeys.PROP_BROADCAST_PORT: 12000,
       },
       on_found_service=on_found_service
    )
