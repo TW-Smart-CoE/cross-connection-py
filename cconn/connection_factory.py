@@ -11,6 +11,7 @@ from cconn.network.detect.udp.udp_detector import UdpDetector
 from cconn.network.register.network_register import NetworkRegister
 from cconn.network.register.udp.udp_register import UdpRegister
 
+
 class ConnectionFactory:
     @staticmethod
     def create_connection(connection_type: ConnectionType) -> Connection:

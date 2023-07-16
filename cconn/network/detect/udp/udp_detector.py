@@ -60,7 +60,8 @@ class UdpDetector(NetworkDetector):
         self.__is_keep_receiving = True
 
         def receive_data():
-            while self.__is_keep_receiving and self.__receiver_sock is not None:
+            while self.__is_keep_receiving and \
+                    self.__receiver_sock is not None:
                 self.__logger.debug(
                     f'Waiting for broadcast on port {self.__broadcast_port}')
 

@@ -211,7 +211,8 @@ class TcpClient(Connection):
                     if send_len > 0:
                         on_action_listener.on_success()
                     else:
-                        on_action_listener.on_failure(Exception('Error send data failed'))
+                        on_action_listener.on_failure(
+                            Exception('Error send data failed'))
             else:
                 if on_action_listener is not None:
                     on_action_listener.on_failure(
@@ -271,7 +272,8 @@ class TcpClient(Connection):
                         on_action_listener.on_success()
                 else:
                     if on_action_listener is not None:
-                        on_action_listener.on_failure(Exception('Error send data failed'))
+                        on_action_listener.on_failure(
+                            Exception('Error send data failed'))
             else:
                 if on_action_listener is not None:
                     on_action_listener.on_failure(
