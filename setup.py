@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'cross-connection',
-    version = '0.2.1',
+    version = '0.2.2',
     packages = find_packages(exclude = ['test', 'docs', 'dist', 'build']),
     include_package_data=True,
     description = 'cross-connection library',
