@@ -1,5 +1,6 @@
 # coding: utf-8
 
+from typing import Optional
 from cconn.bus.bus import Bus
 from cconn.bus.cross_connection_bus import CrossConnectionBus
 from cconn.comm.tcp.client.tcp_client import TcpClient
@@ -11,25 +12,29 @@ from cconn.network.register.network_register import NetworkRegister
 from cconn.network.register.udp.udp_register import UdpRegister
 
 class ConnectionFactory:
-    def create_connection(connection_type: ConnectionType) -> Connection:
+    @staticmethod
+    def create_connection(connection_type: ConnectionType) -> Optional[Connection]:
         if connection_type == ConnectionType.TCP:
             return TcpClient()
         else:
             return None
 
+    @staticmethod
     def create_detector(
-            network_discovery_type: NetworkDiscoveryType) -> NetworkDetector:
+            network_discovery_type: NetworkDiscoveryType) -> Optional[NetworkDetector]:
         if network_discovery_type == NetworkDiscoveryType.UDP:
             return UdpDetector()
         else:
             return None
 
+    @staticmethod
     def create_register(
-            network_discovery_type: NetworkDiscoveryType) -> NetworkRegister:
+            network_discovery_type: NetworkDiscoveryType) -> Optional[NetworkRegister]:
         if network_discovery_type == NetworkDiscoveryType.UDP:
             return UdpRegister()
         else:
             return None
 
+    @staticmethod
     def create_bus() -> Bus:
         return CrossConnectionBus()

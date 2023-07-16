@@ -4,7 +4,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from socket import AF_INET, SOCK_STREAM, socket
 from threading import Thread
-from typing import Callable, Dict, List
+from typing import Callable, Dict, List, Optional
 from cconn.comm.base.msg import Msg, MsgHeader, MsgType
 from cconn.comm.base.comm_handler import CommHandler
 from cconn.comm.base.pubsub.client_comm_pubsub_manager import (
@@ -39,7 +39,7 @@ class TcpClient(Connection):
         self.__logger = DefaultLogger()
         self.__subscribe_manager = ClientCommPubSubManager(self.__logger)
         self.__on_connection_state_changed_listener_list: \
-            List[Callable[[ConnectionState, Exception], None]] = []
+            List[Callable[[ConnectionState, Optional[Exception]], None]] = []
         self.__address = ''
         self.__port = TcpClient.PROPERTY_PORT_DEFAULT
         self.__auto_reconnect = False
@@ -58,13 +58,13 @@ class TcpClient(Connection):
 
     def add_on_connection_state_changed_listener(
             self,
-            listener: Callable[[ConnectionState, Exception], None]):
+            listener: Callable[[ConnectionState, Optional[Exception]], None]):
         if listener not in self.__on_connection_state_changed_listener_list:
             self.__on_connection_state_changed_listener_list.append(listener)
 
     def remove_on_connection_state_changed_listener(
             self,
-            listener: Callable[[ConnectionState, Exception], None]):
+            listener: Callable[[ConnectionState, Optional[Exception]], None]):
         self.__on_connection_state_changed_listener_list.remove(listener)
 
     def start(self, config_props: Dict[str, str]):
@@ -108,7 +108,7 @@ class TcpClient(Connection):
 
     def __close_task(self):
         if self.__comm_handler is not None:
-            self.__comm_handler.close()
+            self.__comm_handler.close(False)
 
         self.__subscribe_manager.clear()
         self.__address = ''
@@ -122,7 +122,7 @@ class TcpClient(Connection):
     def __change_connection_state(
         self, state:
         ConnectionState,
-        e: Exception = None
+        e: Optional[Exception] = None
     ):
         self.__connection_state = state
         if state == ConnectionState.CONNECTED:
@@ -191,7 +191,7 @@ class TcpClient(Connection):
             topic: str,
             method: Method,
             data: bytes,
-            on_action_listener: OnActionListener):
+            on_action_listener: Optional[OnActionListener]):
         full_topic = TopicMapper.to_full_topic(topic, method)
         full_topic_bytes = DataConverter.str_to_bytes(full_topic)
         try:
@@ -211,7 +211,7 @@ class TcpClient(Connection):
                     if send_len > 0:
                         on_action_listener.on_success()
                     else:
-                        on_action_listener.on_failure('Error send data failed')
+                        on_action_listener.on_failure(Exception('Error send data failed'))
             else:
                 if on_action_listener is not None:
                     on_action_listener.on_failure(
@@ -228,7 +228,7 @@ class TcpClient(Connection):
         topic: str,
         method: Method,
         data: bytes,
-        on_action_listener: OnActionListener = None
+        on_action_listener: Optional[OnActionListener] = None
     ):
         if not self.__is_init:
             if on_action_listener is not None:
@@ -244,7 +244,7 @@ class TcpClient(Connection):
         topic: str,
         method: Method,
         on_data_listener: Callable[[str, Method, bytes], None],
-        on_action_listener: OnActionListener
+        on_action_listener: Optional[OnActionListener]
     ):
         full_topic = TopicMapper.to_full_topic(topic, method)
         full_topic_bytes = DataConverter.str_to_bytes(full_topic)
@@ -271,7 +271,7 @@ class TcpClient(Connection):
                         on_action_listener.on_success()
                 else:
                     if on_action_listener is not None:
-                        on_action_listener.on_failure('Error send data failed')
+                        on_action_listener.on_failure(Exception('Error send data failed'))
             else:
                 if on_action_listener is not None:
                     on_action_listener.on_failure(
@@ -280,14 +280,15 @@ class TcpClient(Connection):
         except Exception as e:
             self.__logger.error(
                 'Error occurred when sending data: {0}'.format(str(e)))
-            on_action_listener.on_failure(e)
+            if on_action_listener is not None:
+                on_action_listener.on_failure(e)
 
     def subscribe(
         self,
         topic: str,
         method: Method,
         on_data_listener: Callable[[str, Method, bytes], None],
-        on_action_listener: OnActionListener = None
+        on_action_listener: Optional[OnActionListener] = None
     ):
         if not self.__is_init:
             if on_action_listener is not None:

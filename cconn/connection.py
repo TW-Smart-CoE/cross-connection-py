@@ -2,7 +2,7 @@
 
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import Callable, Dict
+from typing import Callable, Dict, Optional
 from cconn.module import Module
 from cconn.comm.base.msg import Method
 
@@ -54,7 +54,7 @@ class Connection(Module):
         topic: str,
         method: Method,
         data: bytes,
-        on_action_listener: OnActionListener = None
+        on_action_listener: Optional[OnActionListener] = None
     ):
         raise NotImplementedError
 
@@ -64,7 +64,7 @@ class Connection(Module):
         topic: str,
         method: Method,
         on_data_listener: Callable[[str, Method, bytes], None],
-        on_action_listener: OnActionListener = None
+        on_action_listener: Optional[OnActionListener] = None
     ):
         raise NotImplementedError
 
