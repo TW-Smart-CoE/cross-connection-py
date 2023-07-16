@@ -30,7 +30,7 @@ def on_conn_state_changed(conn_state: ConnectionState, e: Exception):
 
 connection.add_on_connection_state_changed_listener(on_conn_state_changed)
 
-def on_found_service(config_props: Dict[str, str]):
+def on_found_service(config_props: Dict[str, object]):
    detector.stop_discover()
    print(config_props)
 

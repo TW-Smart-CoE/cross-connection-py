@@ -43,7 +43,7 @@ class CrossConnectionBus(Bus):
     def set_logger(self, logger: Logger):
         self.__logger = logger
 
-    def __msg_handler(self, msg_obj: any):
+    def __msg_handler(self, msg_obj: object):
         if isinstance(msg_obj, MsgObjPublish):
             for server_struct in self.__server_dict.values():
                 if server_struct.server != msg_obj.exclude_server:
@@ -74,8 +74,8 @@ class CrossConnectionBus(Bus):
     def start(
             self,
             connection_type: ConnectionType,
-            server_config: Dict[str, str],
-            network_register_config: Dict[str, str]) -> bool:
+            server_config: Dict[str, object],
+            network_register_config: Dict[str, object]) -> bool:
         if not self.__is_initialized:
             return False
 

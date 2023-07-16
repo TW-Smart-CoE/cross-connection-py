@@ -13,27 +13,27 @@ from cconn.network.register.udp.udp_register import UdpRegister
 
 class ConnectionFactory:
     @staticmethod
-    def create_connection(connection_type: ConnectionType) -> Optional[Connection]:
+    def create_connection(connection_type: ConnectionType) -> Connection:
         if connection_type == ConnectionType.TCP:
             return TcpClient()
         else:
-            return None
+            raise RuntimeError('Unsupported connection type')
 
     @staticmethod
     def create_detector(
-            network_discovery_type: NetworkDiscoveryType) -> Optional[NetworkDetector]:
+            network_discovery_type: NetworkDiscoveryType) -> NetworkDetector:
         if network_discovery_type == NetworkDiscoveryType.UDP:
             return UdpDetector()
         else:
-            return None
+            raise RuntimeError('Unsupported detector type')
 
     @staticmethod
     def create_register(
-            network_discovery_type: NetworkDiscoveryType) -> Optional[NetworkRegister]:
+            network_discovery_type: NetworkDiscoveryType) -> NetworkRegister:
         if network_discovery_type == NetworkDiscoveryType.UDP:
             return UdpRegister()
         else:
-            return None
+            raise RuntimeError('Unsupported register type')
 
     @staticmethod
     def create_bus() -> Bus:

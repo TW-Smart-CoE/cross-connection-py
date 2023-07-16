@@ -22,7 +22,7 @@ class Server(Module):
             raise NotImplementedError
 
     @abstractmethod
-    def start(self, config_props: Dict[str, str]) -> bool:
+    def start(self, config_props: Dict[str, object]) -> bool:
         raise NotImplementedError
 
     @abstractmethod

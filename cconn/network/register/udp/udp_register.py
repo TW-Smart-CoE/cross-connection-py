@@ -68,7 +68,7 @@ class UdpRegister(NetworkRegister):
 
     def register(
         self,
-        config_props: Dict[str, str]
+        config_props: Dict[str, object]
     ):
         self.__broadcast_port = PropsUtils.get_prop_int(
             config_props,

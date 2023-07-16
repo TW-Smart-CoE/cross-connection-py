@@ -67,7 +67,7 @@ class TcpClient(Connection):
             listener: Callable[[ConnectionState, Optional[Exception]], None]):
         self.__on_connection_state_changed_listener_list.remove(listener)
 
-    def start(self, config_props: Dict[str, str]):
+    def start(self, config_props: Dict[str, object]):
         self.__address = PropsUtils.get_prop_str(
             config_props,
             PropKeys.PROP_IP,

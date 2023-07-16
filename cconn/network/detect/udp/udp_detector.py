@@ -9,6 +9,7 @@ from socket import (
     SO_BROADCAST
 )
 from typing import Callable, Dict, Final
+from threading import Thread
 from cconn.log.logger import DefaultLogger, Logger
 from cconn.network.detect.network_detector import NetworkDetector
 from cconn.definitions.prop_keys import PropKeys
@@ -39,7 +40,7 @@ class UdpDetector(NetworkDetector):
     def start_discover(
         self,
         config_props: Dict[str, str],
-        on_found_service: Callable[[Dict[str, str]], None],
+        on_found_service: Callable[[Dict[str, object]], None],
     ):
         self.__broadcast_port = PropsUtils.get_prop_int(
             config_props,
@@ -58,22 +59,25 @@ class UdpDetector(NetworkDetector):
         self.__receiver_sock.bind(('', self.__broadcast_port))
         self.__is_keep_receiving = True
 
-        while self.__is_keep_receiving and self.__receiver_sock is not None:
-            self.__logger.debug(
-                f'Waiting for broadcast on port {self.__broadcast_port}')
+        def receive_data():
+            while self.__is_keep_receiving and self.__receiver_sock is not None:
+                self.__logger.debug(
+                    f'Waiting for broadcast on port {self.__broadcast_port}')
 
-            data = self.__receiver_sock.recvfrom(UdpDetector.RECV_BUF_LEN)
-            if len(data[0]) == BROADCAST_MSG_HEADER_LEN:
-                broadcast_msg = BroadcastMsg()
-                broadcast_msg.from_bytes(data[0])
-                if broadcast_msg.flag == self.__flag:
-                    props = dict()
-                    props[PropKeys.PROP_SERVER_IP] \
-                        = str(ipaddress.IPv4Address(broadcast_msg.ip))
-                    props[PropKeys.PROP_SERVER_PORT] \
-                        = broadcast_msg.port
+                data = self.__receiver_sock.recvfrom(UdpDetector.RECV_BUF_LEN)
+                if len(data[0]) == BROADCAST_MSG_HEADER_LEN:
+                    broadcast_msg = BroadcastMsg()
+                    broadcast_msg.from_bytes(data[0])
+                    if broadcast_msg.flag == self.__flag:
+                        props = dict()
+                        props[PropKeys.PROP_SERVER_IP] \
+                            = str(ipaddress.IPv4Address(broadcast_msg.ip))
+                        props[PropKeys.PROP_SERVER_PORT] \
+                            = broadcast_msg.port
 
-                    on_found_service(props)
+                        on_found_service(props)
+
+        Thread(target=receive_data).start()
 
     def stop_discover(self):
         self.__is_keep_receiving = False

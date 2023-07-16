@@ -17,8 +17,8 @@ class Bus(Module):
     def start(
             self,
             connectionType: ConnectionType,
-            server_config: Dict[str, str],
-            network_register_config: Dict[str, str]) -> bool:
+            server_config: Dict[str, object],
+            network_register_config: Dict[str, object]) -> bool:
         raise NotImplementedError
 
     @abstractmethod

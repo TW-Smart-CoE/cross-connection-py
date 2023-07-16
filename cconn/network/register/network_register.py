@@ -9,7 +9,7 @@ class NetworkRegister(Module):
     @abstractmethod
     def register(
         self,
-        config_props: Dict[str, str]
+        config_props: Dict[str, object]
     ):
         raise NotImplementedError
 
