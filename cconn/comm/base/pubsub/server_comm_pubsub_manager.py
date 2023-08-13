@@ -1,5 +1,6 @@
 # coding: utf-8
 
+from threading import Lock
 from typing import List
 from cconn.comm.base.comm_server_wrapper import CommServerWrapper
 from cconn.comm.base.msg import Msg, MsgType
@@ -13,6 +14,7 @@ class ServerCommPubSubManager:
         self.__logger: Logger = logger
         self.__comm_server_wrapper_list: List[CommServerWrapper] = []
         self.__server_callback: Server.Callback = None
+        self.__mutex = Lock()
 
     def set_logger(self, logger: Logger):
         self.__logger = logger
@@ -33,27 +35,32 @@ class ServerCommPubSubManager:
             self.__handle_unsubscribe(comm_server_wrapper, msg)
 
     def add_comm_wrapper(self, comm_server_wrapper: CommServerWrapper):
-        self.__comm_server_wrapper_list.append(comm_server_wrapper)
+        with self.__mutex:
+            self.__comm_server_wrapper_list.append(comm_server_wrapper)
 
     def remove_comm_wrapper(self, comm_server_wrapper: CommServerWrapper):
-        self.__comm_server_wrapper_list.remove(comm_server_wrapper)
+        with self.__mutex:
+            self.__comm_server_wrapper_list.remove(comm_server_wrapper)
 
     def client_count(self):
-        return len(self.__comm_server_wrapper_list)
+        with self.__mutex:
+            return len(self.__comm_server_wrapper_list)
 
     def clear_all_comm_wrappers(self):
-        for it in self.__comm_server_wrapper_list:
-            it.clear()
-            it.comm_handler.close(False)
+        with self.__mutex:
+            for it in self.__comm_server_wrapper_list:
+                it.clear()
+                it.comm_handler.close(False)
 
-        self.__comm_server_wrapper_list.clear()
+            self.__comm_server_wrapper_list.clear()
 
     def __handle_publish_msg_self(self, msg: Msg):
         full_topic = DataConverter.bytes_to_str(msg.topic)
 
-        for it in self.__comm_server_wrapper_list:
-            if it.is_subscribed(full_topic):
-                it.comm_handler.send(msg)
+        with self.__mutex:
+            for it in self.__comm_server_wrapper_list:
+                if it.is_subscribed(full_topic):
+                    it.comm_handler.send(msg)
 
     def __handle_publish(self, msg: Msg):
         self.__handle_publish_msg_self(msg)
