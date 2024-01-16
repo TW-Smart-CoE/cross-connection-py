@@ -25,6 +25,9 @@ if __name__ == '__main__':
         }
     )
 
-    input()
-
+    try:
+        input()
+    except KeyboardInterrupt:
+        pass
+    
     bus.stop_all()

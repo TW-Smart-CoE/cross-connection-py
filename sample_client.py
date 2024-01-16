@@ -13,13 +13,16 @@ from cconn.comm.base.msg import Method
 TEST_TOPIC: Final = '/execute_cmd_list'
 DETECT_FLAG: Final = 0xfffe1234
 
+
 detector = ConnectionFactory.create_detector(NetworkDiscoveryType.UDP)
 connection = ConnectionFactory.create_connection(ConnectionType.TCP)
+
 
 def on_data_arrived(topic: str, method: Method, data: bytes):
    print(topic)
    print(method)
    print(DataConverter.bytes_to_str(data))
+
 
 def on_conn_state_changed(conn_state: ConnectionState, e: Exception):
    print(conn_state)
@@ -28,7 +31,9 @@ def on_conn_state_changed(conn_state: ConnectionState, e: Exception):
       connection.subscribe('/chat/response', Method.REPORT, on_data_arrived)
       connection.subscribe('/auto_play', Method.REQUEST, on_data_arrived)
 
+
 connection.add_on_connection_state_changed_listener(on_conn_state_changed)
+
 
 def on_found_service(config_props: Dict[str, object]):
    detector.stop_discover()
@@ -48,6 +53,14 @@ def on_found_service(config_props: Dict[str, object]):
       })
 
 
+def cleanup():
+   print('stop discover')
+   detector.stop_discover()
+
+   print('disconnect')
+   connection.close()
+
+
 if __name__ == '__main__':
    detector.start_discover(
       config_props={
@@ -59,7 +72,12 @@ if __name__ == '__main__':
 
    count = 1
    while True:
-      input()
+      try:
+         input()
+      except KeyboardInterrupt:
+         cleanup()         
+         break
+
       if connection.get_state() == ConnectionState.CONNECTED:
           connection.publish(TEST_TOPIC, Method.REQUEST,
                              DataConverter.str_to_bytes('data {0}'.format(count)))
