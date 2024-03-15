@@ -11,6 +11,8 @@ class PropKeys:
     PROP_MAX_RECONNECT_RETRY_TIME: Final = 'max_reconnect_retry_time'
     PROP_BROADCAST_PORT: Final = 'broadcast_port'
     PROP_BROADCAST_INTERVAL: Final = 'broadcast_interval'
+    PROP_BROADCAST_DATA: Final = 'broadcast_data'
+    PROP_BROADCAST_DEBUG_MODE: Final = 'broadcast_debug_mode'
     PROP_FLAG = 'flag'
     PROP_SERVER_IP: Final = 'server_ip'
     PROP_SERVER_PORT: Final = 'server_port'

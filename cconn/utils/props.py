@@ -63,3 +63,20 @@ class PropsUtils:
             except BaseException as e:
                 print(e)
                 return default_value
+
+    @staticmethod
+    def get_prop_bytes(
+        config_props: Dict,
+        key: str,
+        default_value: bytes,
+    ) -> bytes:
+        data = config_props.get(key)
+        if data is None:
+            return default_value
+        else:
+            try:
+                data = bytes(data)
+                return data
+            except BaseException as e:
+                print(e)
+                return default_value

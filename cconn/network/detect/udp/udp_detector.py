@@ -11,13 +11,14 @@ from socket import (
 from typing import Callable, Dict, Final
 from threading import Thread
 from cconn.log.logger import DefaultLogger, Logger
-from cconn.network.detect.network_detector import NetworkDetector
 from cconn.definitions.prop_keys import PropKeys
 from cconn.utils.props import PropsUtils
-from cconn.network.detect.udp.broadcast_msg import (
+from cconn.utils.str import bytes_to_hex_format
+from cconn.network.detect.network_detector import NetworkDetector
+from cconn.network.detect.udp.broadcast_header import (
     BROADCAST_MSG_HEADER_LEN,
     DEFAULT_BROADCAST_FLAG,
-    BroadcastMsg,
+    BroadcastHeader,
 )
 
 
@@ -33,6 +34,7 @@ class UdpDetector(NetworkDetector):
         self.__broadcast_port = 0
         self.__is_keep_receiving = False
         self.__flag = 0
+        self.__debug_mode = False
 
     def set_logger(self, logger: Logger):
         self.__logger = logger
@@ -54,6 +56,12 @@ class UdpDetector(NetworkDetector):
             DEFAULT_BROADCAST_FLAG,
         )
 
+        self.__debug_mode = PropsUtils.get_prop_bool(
+            config_props,
+            PropKeys.PROP_BROADCAST_DEBUG_MODE,
+            False,
+        )
+
         self.__receiver_sock = socket(AF_INET, SOCK_DGRAM)
         self.__receiver_sock.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
         self.__receiver_sock.bind(('', self.__broadcast_port))
@@ -66,8 +74,12 @@ class UdpDetector(NetworkDetector):
                     f'Waiting for broadcast on port {self.__broadcast_port}')
 
                 data = self.__receiver_sock.recvfrom(UdpDetector.RECV_BUF_LEN)
-                if len(data[0]) == BROADCAST_MSG_HEADER_LEN:
-                    broadcast_msg = BroadcastMsg()
+
+                if self.__debug_mode:
+                    self.__logger.debug(f'received data (len={len(data[0])}): {bytes_to_hex_format(data[0])}')
+
+                if len(data[0]) >= BROADCAST_MSG_HEADER_LEN:
+                    broadcast_msg = BroadcastHeader()
                     broadcast_msg.from_bytes(data[0])
                     if broadcast_msg.flag == self.__flag:
                         props = dict()
@@ -75,6 +87,9 @@ class UdpDetector(NetworkDetector):
                             = str(ipaddress.IPv4Address(broadcast_msg.ip))
                         props[PropKeys.PROP_SERVER_PORT] \
                             = broadcast_msg.port
+
+                        if len(data[0]) > BROADCAST_MSG_HEADER_LEN:
+                            props[PropKeys.PROP_BROADCAST_DATA] = data[0][BROADCAST_MSG_HEADER_LEN:]
 
                         on_found_service(props)
 

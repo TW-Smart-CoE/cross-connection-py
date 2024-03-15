@@ -41,6 +41,7 @@ def on_found_service(config_props: Dict[str, object]):
 
    ip = PropsUtils.get_prop_str(config_props, PropKeys.PROP_SERVER_IP, '')
    port = PropsUtils.get_prop_int(config_props, PropKeys.PROP_SERVER_PORT, 0)
+   data = PropsUtils.get_prop_bytes(config_props, PropKeys.PROP_BROADCAST_DATA, None)
 
    print(f'found {ip} {port}')
    if ip != '' and port != 0:
@@ -51,6 +52,9 @@ def on_found_service(config_props: Dict[str, object]):
          PropKeys.PROP_MAX_RECONNECT_RETRY_TIME: 8,
          PropKeys.PROP_RECV_BUFFER_SIZE: 8192,
       })
+   
+   if data is not None:
+      print(DataConverter.bytes_to_str(data))
 
 
 def cleanup():
@@ -66,6 +70,7 @@ if __name__ == '__main__':
       config_props={
          PropKeys.PROP_FLAG: DETECT_FLAG,
          PropKeys.PROP_BROADCAST_PORT: 12000,
+         PropKeys.PROP_BROADCAST_DEBUG_MODE: True,
       },
       on_found_service=on_found_service
    )
