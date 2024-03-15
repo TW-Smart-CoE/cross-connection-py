@@ -76,7 +76,7 @@ class UdpDetector(NetworkDetector):
                 data = self.__receiver_sock.recvfrom(UdpDetector.RECV_BUF_LEN)
 
                 if self.__debug_mode:
-                    self.__logger.debug(f'received data (len={len(data[0])}): {bytes_to_hex_format(data[0])}')
+                    self.__logger.debug(f'received broadcast (len={len(data[0])}): {bytes_to_hex_format(data[0])}')
 
                 if len(data[0]) >= BROADCAST_MSG_HEADER_LEN:
                     broadcast_msg = BroadcastHeader()

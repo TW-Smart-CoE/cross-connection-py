@@ -50,7 +50,7 @@ class UdpRegister(NetworkRegister):
                     data += self.__data
                 
                 if self.__debug_mode:
-                    self.__logger.debug(f'send data (len={len(data)}): {bytes_to_hex_format(data)}')
+                    self.__logger.debug(f'send broadcast (len={len(data)}): {bytes_to_hex_format(data)}')
                 
                 self.__socket.sendto(data,
                                      ('<broadcast>', self.__broadcast_port))
