@@ -26,7 +26,7 @@ class UdpDetector(NetworkDetector):
     ANY_ADDRESS: Final = "0.0.0.0"
     DEFAULT_BROADCAST_PORT: Final = 12000
     DEFAULT_BROADCAST_INTERVAL: Final = 10
-    RECV_BUF_LEN: Final = 32
+    RECV_BUF_LEN: Final = 4096
 
     def __init__(self):
         self.__logger = DefaultLogger()
