@@ -95,12 +95,11 @@ class UdpDetector(NetworkDetector):
                             on_found_service(props)
                         else:
                             if self.__debug_mode:
-                                self.__logger.debug(
+                                self.__logger.error(
                                     f'Invalid broadcast msg data len {len(data[0]) - BROADCAST_MSG_HEADER_LEN}, but broadcast_header.data_len is {broadcast_header.data_len}')
                     else:
                         if self.__debug_mode:
-                            self.__logger.debug(
-                                f'Invalid flag {broadcast_header.flag} != {self.__flag}')
+                            self.__logger.error(f'Received broadcast flag does not match')
 
         Thread(target=receive_data).start()
 
