@@ -45,7 +45,7 @@ class UdpRegister(NetworkRegister):
     def __send_broadcast_task(self):
         while self.__is_send_broadcast:
             try:
-                data = self.__build_broadcast_header()
+                data = self.__build_broadcast_header(len(self.__data) if self.__data is not None else 0)
                 if self.__data is not None:
                     data += self.__data
                 
@@ -59,11 +59,12 @@ class UdpRegister(NetworkRegister):
 
             time.sleep(self.__broadcast_interval / 1000)
 
-    def __build_broadcast_header(self) -> bytes:
+    def __build_broadcast_header(self, data_len: int) -> bytes:
         broadcast_header = BroadcastHeader()
         broadcast_header.flag = self.__flag
         broadcast_header.ip = AddressUtils.ipv4_str_to_int(self.__server_ip)
         broadcast_header.port = self.__server_port
+        broadcast_header.data_len = data_len
 
         return broadcast_header.to_bytes()
 
