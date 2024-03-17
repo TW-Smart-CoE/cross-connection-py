@@ -33,3 +33,4 @@ if __name__ == '__main__':
         pass
     
     bus.stop_all()
+    bus.cleanup()

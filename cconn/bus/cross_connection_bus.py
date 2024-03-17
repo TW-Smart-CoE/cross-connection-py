@@ -91,15 +91,39 @@ class CrossConnectionBus(Bus):
 
         server_struct.register.register(network_register_config)
         return is_started
+    
+    def reset_register(
+        self,
+        connection_type: ConnectionType,
+        network_register_config: Dict[str, object]) -> bool:
+        if not self.__is_initialized:
+            return False
+        
+        if connection_type not in self.__server_dict:
+            return False
+        
+        server_struct = self.__server_dict[connection_type]
+        server_struct.register.unregister()
+        server_struct.register.register(network_register_config)
+        return True 
 
     def stop_all(self):
-        self.__msg_thread.stop()
+        if not self.__is_initialized:
+            return
 
         for it in self.__server_dict.values():
             it.register.unregister()
             it.server.stop()
 
         self.__logger.info(f'CrossConnectionBus stopped')
+    
+    def cleanup(self):
+        if not self.__is_initialized:
+            return
+        
+        self.__server_dict.clear()
+        self.__msg_thread.stop()
+        self.__is_initialized = False
 
     def __create_server_callback(self, server: Server) -> ServerCallback:
         return CrossConnectionBus.ServerCallback(server, self)

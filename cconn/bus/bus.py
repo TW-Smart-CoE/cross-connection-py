@@ -15,16 +15,28 @@ class Bus(Module):
 
     @abstractmethod
     def start(
-            self,
-            connectionType: ConnectionType,
-            server_config: Dict[str, object],
-            network_register_config: Dict[str, object]) -> bool:
+        self,
+        connection_type: ConnectionType,
+        server_config: Dict[str, object],
+        network_register_config: Dict[str, object]) -> bool:
+        raise NotImplementedError
+
+    @abstractmethod
+    def reset_register(
+        self,
+        connection_type: ConnectionType,
+        network_register_config: Dict[str, object]) -> bool:
         raise NotImplementedError
 
     @abstractmethod
     def stop_all(self):
         raise NotImplementedError
+    
+    @abstractmethod
+    def cleanup(self):
+        raise NotImplementedError
 
     @abstractmethod
     def publish_msg_to_bus(msg: Msg, exclude_server: Server):
         raise NotImplementedError
+    
