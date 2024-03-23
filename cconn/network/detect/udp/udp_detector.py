@@ -73,33 +73,36 @@ class UdpDetector(NetworkDetector):
                 self.__logger.debug(
                     f'Waiting for broadcast on port {self.__broadcast_port}')
 
-                data = self.__receiver_sock.recvfrom(UdpDetector.RECV_BUF_LEN)
+                try:
+                    data = self.__receiver_sock.recvfrom(UdpDetector.RECV_BUF_LEN)
 
-                if self.__debug_mode:
-                    self.__logger.debug(f'received broadcast (len={len(data[0])}): {bytes_to_hex_format(data[0])}')
+                    if self.__debug_mode:
+                        self.__logger.debug(f'received broadcast (len={len(data[0])}): {bytes_to_hex_format(data[0])}')
 
-                if len(data[0]) >= BROADCAST_MSG_HEADER_LEN:
-                    broadcast_header = BroadcastHeader()
-                    broadcast_header.from_bytes(data[0])
-                    if broadcast_header.flag == self.__flag:
-                        if broadcast_header.data_len == len(data[0]) - BROADCAST_MSG_HEADER_LEN:
-                            props = dict()
-                            props[PropKeys.PROP_SERVER_IP] \
-                                = str(ipaddress.IPv4Address(broadcast_header.ip))
-                            props[PropKeys.PROP_SERVER_PORT] \
-                                = broadcast_header.port
+                    if len(data[0]) >= BROADCAST_MSG_HEADER_LEN:
+                        broadcast_header = BroadcastHeader()
+                        broadcast_header.from_bytes(data[0])
+                        if broadcast_header.flag == self.__flag:
+                            if broadcast_header.data_len == len(data[0]) - BROADCAST_MSG_HEADER_LEN:
+                                props = dict()
+                                props[PropKeys.PROP_SERVER_IP] \
+                                    = str(ipaddress.IPv4Address(broadcast_header.ip))
+                                props[PropKeys.PROP_SERVER_PORT] \
+                                    = broadcast_header.port
 
-                            if len(data[0]) > BROADCAST_MSG_HEADER_LEN:
-                                props[PropKeys.PROP_BROADCAST_DATA] = data[0][BROADCAST_MSG_HEADER_LEN:]
+                                if len(data[0]) > BROADCAST_MSG_HEADER_LEN:
+                                    props[PropKeys.PROP_BROADCAST_DATA] = data[0][BROADCAST_MSG_HEADER_LEN:]
 
-                            on_found_service(props)
+                                on_found_service(props)
+                            else:
+                                if self.__debug_mode:
+                                    self.__logger.error(
+                                        f'Invalid broadcast msg data len {len(data[0]) - BROADCAST_MSG_HEADER_LEN}, but broadcast_header.data_len is {broadcast_header.data_len}')
                         else:
                             if self.__debug_mode:
-                                self.__logger.error(
-                                    f'Invalid broadcast msg data len {len(data[0]) - BROADCAST_MSG_HEADER_LEN}, but broadcast_header.data_len is {broadcast_header.data_len}')
-                    else:
-                        if self.__debug_mode:
-                            self.__logger.error(f'Received broadcast flag does not match')
+                                self.__logger.error(f'Received broadcast flag does not match')
+                except Exception as e:
+                    self.__logger.error(str(e))
 
         Thread(target=receive_data).start()
 
